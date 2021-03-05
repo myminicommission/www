@@ -1,4 +1,10 @@
-export default function Box({ children, header, subheader }) {
+type BoxProps = {
+  header: string;
+  subheader: string;
+  children: React.ReactNode;
+};
+
+export default function Box({ children, header, subheader }: BoxProps) {
   return (
     <div className="bg-gray-50 shadow dark:bg-gray-800 dark:text-white p-8 lg:p-16">
       {header && <h1 className="text-2xl font-medium mb-2">{header}</h1>}

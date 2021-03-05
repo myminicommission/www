@@ -1,6 +1,13 @@
 import Link from "next/link";
 
-export default function Header({ user }) {
+type HeaderProps = {
+  user: {
+    avatar: string;
+    nickname: string;
+  };
+};
+
+export default function Header({ user }: HeaderProps) {
   return (
     <header className="lg:px-16 px-6 bg-gray-900 flex flex-wrap items-center lg:py-0 py-2">
       <div className="flex-1 flex justify-between items-center">
