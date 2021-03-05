@@ -10,6 +10,7 @@ export default function Header({ user }) {
               width="32"
               height="36"
               viewBox="0 0 32 36"
+              id="logo"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
