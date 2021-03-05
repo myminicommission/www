@@ -1,10 +1,8 @@
 import Link from "next/link";
+import { UserProfile } from "@auth0/nextjs-auth0";
 
 type HeaderProps = {
-  user: {
-    avatar: string;
-    nickname: string;
-  };
+  user: UserProfile;
 };
 
 export default function Header({ user }: HeaderProps) {
@@ -60,20 +58,21 @@ export default function Header({ user }: HeaderProps) {
                 <a className="lg:mb-0 mb-2">Help</a>
               </Link>
             </li>
-            {(user === undefined || user === null) && (
+            {!user && (
               <li>
-                <Link href="/login-register">Login / Register</Link>
+                {/* This MUST be an anchor to work! Using Link here will NOT work! */}
+                <a href="/api/auth/login">Login / Register</a>
               </li>
             )}
           </ul>
         </nav>
-        {user !== undefined && user !== null && (
+        {user && (
           <Link href="/profile">
             <a className="lg:ml-4 flex items-center justify-start lg:mb-0 mb-4 pointer-cursor">
               <img
                 className="rounded-full w-10 h-10 border-2 border-transparent hover:border-white"
-                src={user?.avatar}
-                alt={user?.nickname}
+                src={user?.picture}
+                alt={user?.name}
               />
             </a>
           </Link>
