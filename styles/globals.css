@@ -1,0 +1,31 @@
+/* ./styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply bg-white dark:bg-gray-900 text-base text-black dark:text-gray-100;
+  }
+
+  #logo {
+    transform: rotate(180deg)
+  }
+
+  header #menu nav ul li,
+  header #menu nav ul li a {
+    @apply text-gray-200 no-underline;
+  }
+
+  header #menu nav ul li a {
+    @apply lg:p-4 py-3 px-0 block border-b-2 border-transparent hover:border-white hover:text-white;
+  }
+
+  #menu-toggle:checked + #menu {
+    display: block;
+  }
+
+  a {
+    @apply hover:underline text-blue-600 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-50;
+  }
+}
