@@ -1,11 +1,26 @@
+import { UserProvider, useUser } from "@auth0/nextjs-auth0";
 import { AppProps /*, AppContext */ } from "next/app";
 import Header from "../components/Header";
 import "../styles/globals.css";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp(props: AppProps) {
+  return (
+    <UserProvider>
+      <ContentWrapper {...props} />
+    </UserProvider>
+  );
+}
+
+function ContentWrapper({ Component, pageProps }: AppProps) {
+  const { user, error, isLoading } = useUser();
+
+  if (error) console.error(error);
+  if (isLoading) console.log("loading...");
+  if (user) console.log(user);
+
   return (
     <div className="mx-auto">
-      <Header user={null} /> {/* TODO: implement auth user passthrough */}
+      <Header user={user} />
       <Component {...pageProps} />
     </div>
   );
