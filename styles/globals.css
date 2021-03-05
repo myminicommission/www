@@ -1,0 +1,23 @@
+/* ./styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  nav.bg-black,
+  nav.bg-black a {
+    @apply text-white;
+  }
+
+  nav.bg-black a {
+    @apply hover:text-gray-400;
+  }
+
+  #menu-toggle:checked + #menu {
+    display: block;
+  }
+
+  a {
+    @apply text-blue-600 hover:text-blue-500;
+  }
+}
