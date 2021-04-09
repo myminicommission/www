@@ -43,7 +43,7 @@ export default function Profile({ id, nickname, name }: ProfileProps) {
 
 export async function getServerSideProps(context) {
   const client = new ApolloClient({
-    uri: "http://localhost:3001/query",
+    uri: process.env.GRAPHQL_SERVER_URL,
     cache: new InMemoryCache(),
   });
 
