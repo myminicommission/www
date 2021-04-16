@@ -38,23 +38,15 @@ export default function Header({ user }: HeaderProps) {
         className="hidden lg:flex lg:items-center lg:w-auto w-full"
         id="menu"
       >
-        {/* <nav>
+        <nav>
           <ul className="lg:flex items-center justify-between text-base pt-4 lg:pt-0">
-            <li>
-              <Link href="/about">About</Link>
-            </li>
-            <li>
-              <Link href="/help">
-                <a className="lg:mb-0 mb-2">Help</a>
-              </Link>
-            </li>
             {!user && (
               <li>
                 <a href="/api/auth/login">Login / Register</a>
               </li>
             )}
           </ul>
-        </nav> */}
+        </nav>
         {user && (
           // Disabled the Link here to accomodate the logout since there is no profile screen yet
           <Link href={`/${user.nickname}`}>
