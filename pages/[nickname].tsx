@@ -37,7 +37,16 @@ function Profile() {
   }
 
   if (!result.data) {
-    return <FourOhFour />;
+    return (
+      <div>
+        <Head>
+          <title>User {nickname} not found! - My Mini Commission</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <FourOhFour />
+      </div>
+    );
   }
 
   const { name, id } = result.data.userWithNickname;
