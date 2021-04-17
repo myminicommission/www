@@ -1,14 +1,47 @@
 import Head from "next/head";
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { useRouter } from "next/router";
 import Box from "../components/Box";
+import { withUrqlClient } from "next-urql";
+import { useQuery } from "urql";
+import FourOhFour from "./404";
 
-type ProfileProps = {
-  id: string;
-  nickname: string;
-  name: string;
-};
+// type ProfileProps = {
+//   nickname: string;
+// };
 
-export default function Profile({ id, nickname, name }: ProfileProps) {
+function Profile() {
+  const router = useRouter();
+  const { nickname } = router.query;
+
+  if (!nickname) {
+    return <div>Loading...</div>;
+  }
+
+  const [result] = useQuery({
+    query: `
+    query GetUser($nickname: String!) {
+      userWithNickname(nname: $nickname) {
+        id
+        nickname
+        name
+      }
+    }
+  `,
+    variables: {
+      nickname,
+    },
+  });
+
+  if (result.fetching) {
+    return <div>Loading...</div>;
+  }
+
+  if (!result.data) {
+    return <FourOhFour />;
+  }
+
+  const { name, id } = result.data.userWithNickname;
+
   return (
     <div>
       <Head>
@@ -41,30 +74,34 @@ export default function Profile({ id, nickname, name }: ProfileProps) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const client = new ApolloClient({
-    uri: process.env.GRAPHQL_SERVER_URL,
-    cache: new InMemoryCache(),
-  });
+export default withUrqlClient((_ssrExchange, ctx) => ({
+  url: "http://localhost:3001/query",
+}))(Profile);
 
-  const { data } = await client.query({
-    query: gql`
-      query GetUser($nickname: String!) {
-        userWithNickname(nname: $nickname) {
-          id
-          nickname
-          name
-        }
-      }
-    `,
-    variables: {
-      nickname: context.params.nickname,
-    },
-  });
+// export async function getServerSideProps(context) {
+//   // const client = new ApolloClient({
+//   //   uri: process.env.GRAPHQL_SERVER_URL,
+//   //   cache: new InMemoryCache(),
+//   // });
 
-  return {
-    props: {
-      ...data.userWithNickname,
-    },
-  };
-}
+//   // const { data } = await client.query({
+//   //   query: gql`
+//   //     query GetUser($nickname: String!) {
+//   //       userWithNickname(nname: $nickname) {
+//   //         id
+//   //         nickname
+//   //         name
+//   //       }
+//   //     }
+//   //   `,
+//   //   variables: {
+//   //     nickname: context.params.nickname,
+//   //   },
+//   // });
+
+//   return {
+//     props: {
+//       nickname: context.params.nickname,
+//     },
+//   };
+// }

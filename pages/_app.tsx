@@ -15,8 +15,6 @@ function ContentWrapper({ Component, pageProps }: AppProps) {
   const { user, error, isLoading } = useUser();
 
   if (error) console.error(error);
-  if (isLoading) console.log("loading...");
-  if (user) console.log(user);
 
   return (
     <div className="mx-auto">
