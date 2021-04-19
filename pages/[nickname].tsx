@@ -80,6 +80,9 @@ function Profile() {
   );
 }
 
-export default withUrqlClient(() => ({
-  url: process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL,
-}))(Profile);
+export default withUrqlClient(
+  () => ({
+    url: process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL,
+  }),
+  { ssr: false }
+)(Profile);
