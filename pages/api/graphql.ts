@@ -5,7 +5,7 @@ import { getSession } from "@auth0/nextjs-auth0";
 const app = express();
 
 app.use("*", async (req, res, next) => {
-  const session = await getSession(req, res);
+  const session = getSession(req, res);
 
   return createProxyMiddleware({
     target: process.env.GRAPHQL_SERVER_URL,

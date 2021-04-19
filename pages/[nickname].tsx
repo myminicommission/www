@@ -8,8 +8,8 @@ import FourOhFour from "./404";
 const USER_WITH_NICKNAME_QUERY = `
 query GetUser($nickname: String!) {
   userWithNickname(nname: $nickname) {
-    nickname
     name
+    picture
   }
 }
 `;
@@ -45,7 +45,7 @@ function Profile() {
     );
   }
 
-  const { name, nickname } = result.data.userWithNickname;
+  const { name, picture } = result.data.userWithNickname;
 
   return (
     <div>
@@ -58,8 +58,18 @@ function Profile() {
         <div className="max-w-none lg:max-w-7xl mx-auto my-0 lg:my-8 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8">
           <div className="grid grid-cols-4 gap-4 lg:gap-8 col-span-1 md:col-span-2">
             <Box
-              header={name}
-              subheader={`${nickname}`}
+              header={
+                <h1 className="text-2xl lg:text-4xl font-medium mb-2 flex flex-row">
+                  {picture && (
+                    <img
+                      src={picture}
+                      alt={name}
+                      className="rounded-full w-10 h-10 lg:w-14 lg:h-14 mr-3"
+                    />
+                  )}
+                  <span>{name}</span>
+                </h1>
+              }
               className="col-span-4 md:col-span-3 h-full"
             >
               Welcome to my profile page!
