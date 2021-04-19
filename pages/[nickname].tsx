@@ -3,30 +3,30 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import Box from "../components/Box";
 import { withUrqlClient } from "next-urql";
-import { ssrExchange, useQuery } from "urql";
+import { useQuery } from "urql";
 import FourOhFour from "./404";
+
+const USER_WITH_NICKNAME_QUERY = `
+query GetUser($nickname: String!) {
+  userWithNickname(nname: $nickname) {
+    nickname
+    name
+  }
+}
+`;
 
 function Profile() {
   const router = useRouter();
   const [result] = useQuery({
     pause: !router.query.nickname,
-    query: `
-    query GetUser($nickname: String!) {
-      userWithNickname(nname: $nickname) {
-        id
-        nickname
-        name
-      }
-    }
-  `,
+    query: USER_WITH_NICKNAME_QUERY,
     variables: {
       nickname: router.query.nickname,
     },
   });
 
-  const { nickname } = router.query;
-
-  if (!nickname || result.fetching) {
+  if (!router.query.nickname || result.fetching) {
+    // TODO: Do a better job with this loading fragment...
     return <div>Loading...</div>;
   }
 
@@ -34,16 +34,19 @@ function Profile() {
     return (
       <div>
         <Head>
-          <title>User {nickname} not found! - My Mini Commission</title>
+          <title>
+            User {router.query.nickname} not found! - My Mini Commission
+          </title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
+        {/* TODO: create a user specific 404 page rather than using the generic one */}
         <FourOhFour />
       </div>
     );
   }
 
-  const { name, id } = result.data.userWithNickname;
+  const { name, nickname } = result.data.userWithNickname;
 
   return (
     <div>
@@ -61,8 +64,6 @@ function Profile() {
               className="col-span-4 md:col-span-3 h-full"
             >
               Welcome to my profile page!
-              <Link href="/testuser1">Test User 1</Link>
-              <Link href="/testuser2">Test User 2</Link>
             </Box>
 
             <Box header="Socials" className="col-span-4 md:col-span-1 h-full">
@@ -79,25 +80,6 @@ function Profile() {
   );
 }
 
-export default withUrqlClient(
-  (ssr, ctx) => {
-    const p = {
-      url: `${process.env.GRAPHQL_SERVER_URL}`,
-    };
-    console.log(p, ctx);
-    return p;
-  },
-  { ssr: false }
-)(Profile);
-
-// export async function getServerSideProps(context) {
-//   const ssrCache = ssrExchange({ isClient: true });
-//   return {
-//     props: {
-//       urqlState: {
-//         ...ssrCache.extractData(),
-//         url: process.env.GRAPHQL_SERVER_URL,
-//       },
-//     },
-//   };
-// }
+export default withUrqlClient(() => ({
+  url: process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL,
+}))(Profile);
