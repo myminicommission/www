@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Box from "../components/Box";
@@ -80,9 +79,6 @@ function Profile() {
   );
 }
 
-export default withUrqlClient(
-  () => ({
-    url: process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL,
-  }),
-  { ssr: false }
-)(Profile);
+export default withUrqlClient(() => ({
+  url: "/api/graphql",
+}))(Profile);
