@@ -1,23 +1,15 @@
+import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Box from "../components/Box";
 import { withUrqlClient } from "next-urql";
-import { useQuery } from "urql";
+import { ssrExchange, useQuery } from "urql";
 import FourOhFour from "./404";
-
-// type ProfileProps = {
-//   nickname: string;
-// };
 
 function Profile() {
   const router = useRouter();
-  const { nickname } = router.query;
-
-  if (!nickname) {
-    return <div>Loading...</div>;
-  }
-
   const [result] = useQuery({
+    pause: !router.query.nickname,
     query: `
     query GetUser($nickname: String!) {
       userWithNickname(nname: $nickname) {
@@ -28,11 +20,13 @@ function Profile() {
     }
   `,
     variables: {
-      nickname,
+      nickname: router.query.nickname,
     },
   });
 
-  if (result.fetching) {
+  const { nickname } = router.query;
+
+  if (!nickname || result.fetching) {
     return <div>Loading...</div>;
   }
 
@@ -63,10 +57,12 @@ function Profile() {
           <div className="grid grid-cols-4 gap-4 lg:gap-8 col-span-1 md:col-span-2">
             <Box
               header={name}
-              subheader={nickname}
+              subheader={`${nickname}`}
               className="col-span-4 md:col-span-3 h-full"
             >
               Welcome to my profile page!
+              <Link href="/testuser1">Test User 1</Link>
+              <Link href="/testuser2">Test User 2</Link>
             </Box>
 
             <Box header="Socials" className="col-span-4 md:col-span-1 h-full">
@@ -83,34 +79,25 @@ function Profile() {
   );
 }
 
-export default withUrqlClient((_ssrExchange, ctx) => ({
-  url: "http://localhost:3001/query",
-}))(Profile);
+export default withUrqlClient(
+  (ssr, ctx) => {
+    const p = {
+      url: `${process.env.GRAPHQL_SERVER_URL}`,
+    };
+    console.log(p, ctx);
+    return p;
+  },
+  { ssr: false }
+)(Profile);
 
 // export async function getServerSideProps(context) {
-//   // const client = new ApolloClient({
-//   //   uri: process.env.GRAPHQL_SERVER_URL,
-//   //   cache: new InMemoryCache(),
-//   // });
-
-//   // const { data } = await client.query({
-//   //   query: gql`
-//   //     query GetUser($nickname: String!) {
-//   //       userWithNickname(nname: $nickname) {
-//   //         id
-//   //         nickname
-//   //         name
-//   //       }
-//   //     }
-//   //   `,
-//   //   variables: {
-//   //     nickname: context.params.nickname,
-//   //   },
-//   // });
-
+//   const ssrCache = ssrExchange({ isClient: true });
 //   return {
 //     props: {
-//       nickname: context.params.nickname,
+//       urqlState: {
+//         ...ssrCache.extractData(),
+//         url: process.env.GRAPHQL_SERVER_URL,
+//       },
 //     },
 //   };
 // }
