@@ -11,6 +11,12 @@
   "dependencies": {
     "@apollo/client": "^3.3.14",
     "@auth0/nextjs-auth0": "^1.1.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-brands-svg-icons": "^5.15.3",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@heroicons/react": "^1.0.1",
+    "@windmill/react-ui": "^0.5.1",
     "autoprefixer": "^10.2.4",
     "express": "^4.17.1",
     "graphql": "^15.5.0",

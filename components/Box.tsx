@@ -16,7 +16,7 @@ export default function Box({
   const headerIsElement = React.isValidElement(header);
   return (
     <div
-      className={`bg-gray-50 shadow dark:bg-gray-800 dark:text-white p-8 lg:p-16 ${
+      className={`bg-gray-50 shadow dark:bg-gray-800 dark:text-white ${
         className ? className : ""
       }`}
     >

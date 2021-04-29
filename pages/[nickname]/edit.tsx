@@ -1,9 +1,10 @@
+import { useUser } from "@auth0/nextjs-auth0";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Box from "../components/Box";
+import Box from "../../components/Box";
 import { withUrqlClient } from "next-urql";
 import { useQuery } from "urql";
-import FourOhFour from "./404";
+import FourOhFour from "../404";
 
 const USER_WITH_NICKNAME_QUERY = `
 query GetUser($nickname: String!) {
@@ -14,7 +15,8 @@ query GetUser($nickname: String!) {
 }
 `;
 
-function Profile() {
+function ProfileEditor() {
+  const { user, error, isLoading } = useUser();
   const router = useRouter();
   const [result] = useQuery({
     pause: !router.query.nickname,
@@ -24,9 +26,17 @@ function Profile() {
     },
   });
 
-  if (!router.query.nickname || result.fetching) {
+  if (error) {
+    return error;
+  }
+
+  if (!router.query.nickname || result.fetching || isLoading) {
     // TODO: Do a better job with this loading fragment...
     return <div>Loading...</div>;
+  }
+
+  if (user.nickname !== router.query.nickname) {
+    router.push(`/${router.query.nickname}`);
   }
 
   if (!result.data) {
@@ -50,7 +60,7 @@ function Profile() {
   return (
     <div>
       <Head>
-        <title>{name} - My Mini Commission</title>
+        <title>Edit {name} - My Mini Commission</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -67,7 +77,7 @@ function Profile() {
                       className="rounded-full w-10 h-10 lg:w-14 lg:h-14 mr-3"
                     />
                   )}
-                  <span>{name}</span>
+                  <span>Edit {name}</span>
                 </h1>
               }
               className="col-span-4 md:col-span-3 h-full"
@@ -91,4 +101,4 @@ function Profile() {
 
 export default withUrqlClient(() => ({
   url: "/api/graphql",
-}))(Profile);
+}))(ProfileEditor);

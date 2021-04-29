@@ -48,12 +48,8 @@ export default function Header({ user }: HeaderProps) {
           </ul>
         </nav>
         {user && (
-          // Disabled the Link here to accomodate the logout since there is no profile screen yet
           <Link href={`/${user.nickname}`}>
-            <a
-              // href="/api/auth/logout"
-              className="lg:ml-4 flex items-center justify-start lg:mb-0 mb-4 pointer-cursor"
-            >
+            <a className="lg:ml-4 flex items-center justify-start lg:mb-0 mb-4 pointer-cursor">
               <img
                 className="rounded-full w-10 h-10 border-2 border-transparent hover:border-white"
                 src={user?.picture}
