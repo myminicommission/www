@@ -19,6 +19,13 @@ query GetUser($nickname: String!) {
   userWithNickname(nname: $nickname) {
     name
     picture
+    forHire
+    socials {
+      facebook
+      instagram
+      twitch
+      twitter
+    }
   }
 }
 `;
@@ -55,7 +62,7 @@ function Profile() {
     );
   }
 
-  const { name, picture } = result.data.userWithNickname;
+  const { name, picture, socials, forHire } = result.data.userWithNickname;
 
   return (
     <div>
@@ -93,65 +100,112 @@ function Profile() {
                 </div>
               }
             >
-              <div className="border-b border-gray-600">
-                <a
-                  href="#"
-                  className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
-                >
-                  <div>
-                    <FontAwesomeIcon icon={faFacebook} className="w-4 h-4" />
-                  </div>
-                  <div className="pl-3">
-                    <p className="text-sm font-medium leading-none text-gray-200">
-                      Facebook
-                    </p>
-                  </div>
-                </a>
+              {socials && (
+                <div className="border-b border-gray-600">
+                  {socials.facebook && (
+                    <a
+                      href={socials.facebook}
+                      className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                    >
+                      <div>
+                        <FontAwesomeIcon
+                          icon={faFacebook}
+                          className="w-4 h-4"
+                        />
+                      </div>
+                      <div className="pl-3">
+                        <p className="text-sm font-medium leading-none text-gray-200">
+                          Facebook
+                        </p>
+                      </div>
+                    </a>
+                  )}
 
-                <a
-                  href="#"
-                  className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
-                >
-                  <div>
-                    <FontAwesomeIcon icon={faInstagram} className="w-4 h-4" />
-                  </div>
-                  <div className="pl-3">
-                    <p className="text-sm font-medium leading-none text-gray-200">
-                      Instagram
-                    </p>
-                  </div>
-                </a>
+                  {socials.instagram && (
+                    <a
+                      href={socials.instagram}
+                      className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                    >
+                      <div>
+                        <FontAwesomeIcon
+                          icon={faInstagram}
+                          className="w-4 h-4"
+                        />
+                      </div>
+                      <div className="pl-3">
+                        <p className="text-sm font-medium leading-none text-gray-200">
+                          Instagram
+                        </p>
+                      </div>
+                    </a>
+                  )}
 
-                <a
-                  href="#"
-                  className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
-                >
-                  <div>
-                    <FontAwesomeIcon icon={faTwitch} className="w-4 h-4" />
-                  </div>
-                  <div className="pl-3">
-                    <p className="text-sm font-medium leading-none text-gray-200">
-                      Twitch
-                    </p>
-                  </div>
-                </a>
+                  {socials.twitch && (
+                    <a
+                      href={socials.twitch}
+                      className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                    >
+                      <div>
+                        <FontAwesomeIcon icon={faTwitch} className="w-4 h-4" />
+                      </div>
+                      <div className="pl-3">
+                        <p className="text-sm font-medium leading-none text-gray-200">
+                          Twitch
+                        </p>
+                      </div>
+                    </a>
+                  )}
 
-                <a
-                  href="#"
-                  className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
-                >
-                  <div>
-                    <FontAwesomeIcon icon={faTwitter} className="w-4 h-4" />
-                  </div>
-                  <div className="pl-3">
-                    <p className="text-sm font-medium leading-none text-gray-200">
-                      Twitter
-                    </p>
-                  </div>
-                </a>
-              </div>
+                  {socials.twitter && (
+                    <a
+                      href={socials.twitter}
+                      className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                    >
+                      <div>
+                        <FontAwesomeIcon icon={faTwitter} className="w-4 h-4" />
+                      </div>
+                      <div className="pl-3">
+                        <p className="text-sm font-medium leading-none text-gray-200">
+                          Twitter
+                        </p>
+                      </div>
+                    </a>
+                  )}
+                </div>
+              )}
 
               <div>
+                {forHire && (
+                  <a
+                    href="#"
+                    className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                  >
+                    <div className="text-green-600">
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                        />
+                      </svg>
+                    </div>
+                    <div className="pl-3">
+                      <p className="text-sm font-medium leading-none text-gray-200">
+                        Hire Me
+                      </p>
+                    </div>
+                  </a>
+                )}
+
                 <a
                   href="#"
                   className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
@@ -177,34 +231,6 @@ function Profile() {
                   <div className="pl-3">
                     <p className="text-sm font-medium leading-none text-gray-200">
                       Contact Me
-                    </p>
-                  </div>
-                </a>
-                <a
-                  href="#"
-                  className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
-                >
-                  <div className="text-green-600">
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-                      />
-                    </svg>
-                  </div>
-                  <div className="pl-3">
-                    <p className="text-sm font-medium leading-none text-gray-200">
-                      Hire Me
                     </p>
                   </div>
                 </a>
