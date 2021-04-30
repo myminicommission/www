@@ -27,7 +27,7 @@ function ProfileEditor() {
   });
 
   if (error) {
-    return error;
+    return <div>Error: {error}</div>;
   }
 
   if (!router.query.nickname || result.fetching || isLoading) {
