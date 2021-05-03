@@ -12,7 +12,7 @@ export default function Header({ user }: HeaderProps) {
         <Link href="/">
           <a>
             <img
-              src="logo_transparent_background.png"
+              src="/logo_transparent_background.png"
               alt="logo"
               className="h-14"
             />
