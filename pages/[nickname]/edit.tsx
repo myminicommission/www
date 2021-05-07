@@ -1,19 +1,72 @@
+import { ChangeEvent, ChangeEventHandler, useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import Box from "../../components/Box";
-import { useQuery } from "urql";
+import { useQuery, useMutation } from "urql";
 import FourOhFour from "../404";
 
 const USER_WITH_NICKNAME_QUERY = `
 query GetUser($nickname: String!) {
   userWithNickname(nname: $nickname) {
+    id
     name
     picture
+    forHire
+    socials {
+      facebook
+      instagram
+      twitch
+      twitter
+    }
   }
 }
 `;
+
+const UPDATE_PROFILE_MUTATION = `
+mutation UpdateProfile($input: ProfileInput!) {
+  updateProfile(input: $input) {
+    success
+  }
+}
+`;
+
+type TextInputProps = {
+  id: string;
+  label: string;
+  defaultValue: string | null;
+  onChange: ChangeEventHandler;
+  hint?: string;
+};
+function TextInput({
+  id,
+  label,
+  defaultValue,
+  hint,
+  onChange,
+}: TextInputProps) {
+  return (
+    <div className="flex flex-wrap mb-6 -mx-3">
+      <div className="w-full px-3">
+        <label
+          className="block mb-2 text-xs font-bold tracking-wide text-gray-200 uppercase"
+          htmlFor={`${id}Field`}
+        >
+          {label}
+        </label>
+        <input
+          className="block w-full px-4 py-3 mb-3 leading-tight text-gray-200 bg-gray-700 border border-gray-200 rounded "
+          id={`${id}Field`}
+          type="text"
+          defaultValue={defaultValue}
+          onChange={onChange}
+        />
+        {hint && <p className="text-xs italic text-gray-400">{hint}</p>}
+      </div>
+    </div>
+  );
+}
 
 function ProfileEditor() {
   const { user, error, isLoading } = useUser();
@@ -25,6 +78,15 @@ function ProfileEditor() {
       nickname: router.query.nickname,
     },
   });
+  const [updateProfileResult, updateProfile] = useMutation(
+    UPDATE_PROFILE_MUTATION
+  );
+  const [displayNameValue, setDisplayNameValue] = useState("");
+  const [forHireValue, setForHireValue] = useState(false);
+  const [facebookValue, setFacebookValue] = useState(null);
+  const [instagramValue, setInstagramValue] = useState(null);
+  const [twitchValue, setTwitchValue] = useState(null);
+  const [twitterValue, setTwitterValue] = useState(null);
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -55,7 +117,65 @@ function ProfileEditor() {
     );
   }
 
-  const { name, picture } = result.data.userWithNickname;
+  const { id, name, picture, forHire, socials } = result.data.userWithNickname;
+
+  const handleSaveClick = async () => {
+    // grab the existing values
+    const data = {
+      id,
+      name,
+      forHire,
+      socials: {
+        facebook: socials.facebook,
+        instagram: socials.instagram,
+        twitch: socials.twitch,
+        twitter: socials.twitter,
+      },
+    };
+
+    // override values if they are different
+    if (displayNameValue !== "" && displayNameValue !== name) {
+      data.name = displayNameValue;
+    }
+
+    if (forHire !== forHireValue) {
+      data.forHire = forHireValue;
+    }
+
+    if (
+      facebookValue &&
+      facebookValue !== "" &&
+      facebookValue !== socials.facebook
+    ) {
+      data.socials.facebook = facebookValue;
+    }
+
+    if (
+      instagramValue &&
+      instagramValue !== "" &&
+      instagramValue !== socials.instagram
+    ) {
+      data.socials.instagram = instagramValue;
+    }
+
+    if (twitchValue && twitchValue !== "" && twitchValue !== socials.twitch) {
+      data.socials.twitch = twitchValue;
+    }
+
+    if (
+      twitterValue &&
+      twitterValue !== "" &&
+      twitterValue !== socials.twitter
+    ) {
+      data.socials.twitter = twitterValue;
+    }
+
+    await updateProfile({
+      input: data,
+    });
+
+    router.push(`/${user.nickname}`);
+  };
 
   return (
     <div>
@@ -65,149 +185,108 @@ function ProfileEditor() {
       </Head>
 
       <div className="lg:px-4">
-        <div className="max-w-none lg:max-w-2xl mx-auto my-0 lg:my-8">
+        <div className="mx-auto my-0 max-w-none lg:max-w-2xl lg:my-8">
           <Box
             header="Manage Account"
             subheader={`${router.query.nickname}`}
             className="p-6"
           >
             <div>
-              <div className="flex max-w-sm w-full shadow-md rounded-lg overflow-hidden mx-auto">
-                <div className="w-2 bg-gray-800"></div>
+              <div className="flex w-full max-w-sm mx-auto overflow-hidden rounded-lg">
+                <div className="flex items-center w-full px-2 py-3">
+                  <div className="w-full max-w-lg">
+                    <Box header="Details" className="shadow-none">
+                      <TextInput
+                        id="displayName"
+                        label="Display Name"
+                        defaultValue={name}
+                        onChange={(e: ChangeEvent) =>
+                          setDisplayNameValue(
+                            (e.target as HTMLInputElement).value
+                          )
+                        }
+                      />
 
-                <div className="flex items-center px-2 py-3">
-                  <form className="w-full max-w-lg">
-                    <div className="flex flex-wrap -mx-3 mb-6">
-                      <div className="w-full px-3">
-                        <label
-                          className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
-                          htmlFor="grid-password"
-                        >
-                          Display Name
-                        </label>
-                        <input
-                          className="appearance-none block w-full bg-gray-700 text-gray-200 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                          id="grid-password"
-                          type="text"
-                          value={name}
-                        />
-                        <p className="text-gray-400 text-xs italic">
-                          Make it as long and as crazy as you'd like
-                        </p>
-                      </div>
-                    </div>
-
-                    {/*  */}
-                    <div className="flex flex-wrap -mx-3 mb-6">
-                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <label
-                          className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
-                          htmlFor="grid-first-name"
-                        >
-                          First Name
-                        </label>
-                        <input
-                          className="appearance-none block w-full bg-gray-700 text-gray-200 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                          id="grid-first-name"
-                          type="text"
-                          placeholder="Jane"
-                        />
-                        <p className="text-red-500 text-xs italic">
-                          Please fill out this field.
-                        </p>
-                      </div>
-                      <div className="w-full md:w-1/2 px-3">
-                        <label
-                          className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
-                          htmlFor="grid-last-name"
-                        >
-                          Last Name
-                        </label>
-                        <input
-                          className="appearance-none block w-full bg-gray-700 text-gray-200 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                          id="grid-last-name"
-                          type="text"
-                          placeholder="Doe"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap -mx-3 mb-6">
-                      <div className="w-full px-3">
-                        <label
-                          className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
-                          htmlFor="grid-password"
-                        >
-                          Password
-                        </label>
-                        <input
-                          className="appearance-none block w-full bg-gray-700 text-gray-200 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                          id="grid-password"
-                          type="password"
-                          placeholder="******************"
-                        />
-                        <p className="text-gray-400 text-xs italic">
-                          Make it as long and as crazy as you'd like
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap -mx-3 mb-2">
-                      <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label
-                          className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
-                          htmlFor="grid-city"
-                        >
-                          City
-                        </label>
-                        <input
-                          className="appearance-none block w-full bg-gray-700 text-gray-200 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                          id="grid-city"
-                          type="text"
-                          placeholder="Albuquerque"
-                        />
-                      </div>
-                      <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label
-                          className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
-                          htmlFor="grid-state"
-                        >
-                          State
-                        </label>
-                        <div className="relative">
-                          <select
-                            className="block appearance-none w-full bg-gray-700 border border-gray-200 text-gray-200 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            id="grid-state"
+                      <div className="flex flex-wrap mb-6 -mx-3">
+                        <div className="w-full px-3">
+                          <label
+                            className="block mb-2 text-xs font-bold tracking-wide text-gray-200 uppercase"
+                            htmlFor="forHire"
                           >
-                            <option>New Mexico</option>
-                            <option>Missouri</option>
-                            <option>Texas</option>
-                          </select>
-                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-200">
-                            <svg
-                              className="fill-current h-4 w-4"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                            >
-                              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                            </svg>
-                          </div>
+                            For Hire?
+                          </label>
+                          <input
+                            className="block px-3 py-3 mb-3 leading-tight bg-gray-700 border border-gray-200 rounded"
+                            id="forHire"
+                            type="checkbox"
+                            defaultChecked={forHire}
+                            onChange={(e) => setForHireValue(e.target.checked)}
+                          />
                         </div>
                       </div>
-                      <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label
-                          className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
-                          htmlFor="grid-zip"
+                    </Box>
+
+                    <Box
+                      header="Socials"
+                      className="pt-4 border-t border-gray-700 shadow-none"
+                    >
+                      <TextInput
+                        id="facebook"
+                        label="Facebook"
+                        hint="https://facebook.com/your_user_name"
+                        defaultValue={socials?.facebook}
+                        onChange={(e: ChangeEvent) =>
+                          setFacebookValue((e.target as HTMLInputElement).value)
+                        }
+                      />
+
+                      <TextInput
+                        id="instagram"
+                        label="Instagram"
+                        onChange={(e) =>
+                          setInstagramValue(
+                            (e.target as HTMLInputElement).value
+                          )
+                        }
+                        defaultValue={socials?.instagram}
+                        hint="https://instagram.com/your_user_name"
+                      />
+
+                      <TextInput
+                        id="twitch"
+                        label="Twitch"
+                        onChange={(e) =>
+                          setTwitchValue((e.target as HTMLInputElement).value)
+                        }
+                        defaultValue={socials?.twitch}
+                        hint="https://twitch.tv/your_user_name"
+                      />
+
+                      <TextInput
+                        id="twitter"
+                        label="Twitter"
+                        onChange={(e) =>
+                          setTwitterValue((e.target as HTMLInputElement).value)
+                        }
+                        defaultValue={socials?.twitter}
+                        hint="https://twitter.com/your_user_name"
+                      />
+                    </Box>
+
+                    <Box
+                      header={<></>}
+                      className="pt-8 border-t border-gray-700 shadow-none"
+                    >
+                      <div className="w-full">
+                        <button
+                          className="w-full px-4 py-2 text-lg font-semibold tracking-wider text-white bg-blue-500 rounded hover:bg-blue-600"
+                          onClick={handleSaveClick}
                         >
-                          Zip
-                        </label>
-                        <input
-                          className="appearance-none block w-full bg-gray-700 text-gray-200 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                          id="grid-zip"
-                          type="text"
-                          placeholder="90210"
-                        />
+                          Save
+                        </button>
                       </div>
-                    </div>
-                  </form>
+                    </Box>
+                  </div>
                 </div>
               </div>
             </div>

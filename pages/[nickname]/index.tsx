@@ -73,26 +73,26 @@ function Profile() {
 
       <div className="lg:px-4">
         {/* main grid */}
-        <div className="max-w-none lg:max-w-7xl mx-auto my-0 lg:my-8 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8">
-          <div className="grid grid-cols-4 gap-4 lg:gap-8 col-span-1 md:col-span-2">
+        <div className="grid grid-cols-1 gap-4 mx-auto my-0 max-w-none lg:max-w-7xl lg:my-8 md:grid-cols-2 lg:gap-8">
+          <div className="grid grid-cols-4 col-span-1 gap-4 lg:gap-8 md:col-span-2">
             {/* User Info */}
             <Box
-              className="col-span-4 md:col-span-1 h-full"
+              className="h-full col-span-4 md:col-span-1"
               header={
-                <div className="text-center p-6  border-b border-gray-600">
+                <div className="p-6 text-center border-b border-gray-600">
                   {picture && (
                     <img
-                      className="h-24 w-24 rounded-full mx-auto"
+                      className="w-24 h-24 mx-auto rounded-full"
                       src={picture}
                       alt={name}
                     />
                   )}
                   <p className="pt-2 text-lg font-semibold">{name}</p>
-                  {user && user.nickname === router.query.nickname && (
-                    <div className="mt-5">
+                  {forHire && (
+                    <div className="w-full mt-5">
                       <Link href={`/${user.nickname}/edit`}>
-                        <a className="border rounded-full py-2 px-4 text-xs font-semibold">
-                          Manage your Account
+                        <a className="block w-full px-4 py-2 font-semibold bg-green-900 border border-green-500 hover:border-green-200 hover:bg-green-700 hover:no-underline">
+                          Hire Me
                         </a>
                       </Link>
                     </div>
@@ -101,11 +101,11 @@ function Profile() {
               }
             >
               {socials && (
-                <div className="border-b border-gray-600">
+                <div>
                   {socials.facebook && (
                     <a
                       href={socials.facebook}
-                      className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                      className="flex px-4 py-2 no-underline hover:bg-gray-900 hover:no-underline"
                     >
                       <div>
                         <FontAwesomeIcon
@@ -124,7 +124,7 @@ function Profile() {
                   {socials.instagram && (
                     <a
                       href={socials.instagram}
-                      className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                      className="flex px-4 py-2 no-underline hover:bg-gray-900 hover:no-underline"
                     >
                       <div>
                         <FontAwesomeIcon
@@ -143,7 +143,7 @@ function Profile() {
                   {socials.twitch && (
                     <a
                       href={socials.twitch}
-                      className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                      className="flex px-4 py-2 no-underline hover:bg-gray-900 hover:no-underline"
                     >
                       <div>
                         <FontAwesomeIcon icon={faTwitch} className="w-4 h-4" />
@@ -159,7 +159,7 @@ function Profile() {
                   {socials.twitter && (
                     <a
                       href={socials.twitter}
-                      className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                      className="flex px-4 py-2 no-underline hover:bg-gray-900 hover:no-underline"
                     >
                       <div>
                         <FontAwesomeIcon icon={faTwitter} className="w-4 h-4" />
@@ -175,44 +175,13 @@ function Profile() {
               )}
 
               <div>
-                {forHire && (
-                  <a
-                    href="#"
-                    className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
-                  >
-                    <div className="text-green-600">
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-                        />
-                      </svg>
-                    </div>
-                    <div className="pl-3">
-                      <p className="text-sm font-medium leading-none text-gray-200">
-                        Hire Me
-                      </p>
-                    </div>
-                  </a>
-                )}
-
                 <a
                   href="#"
-                  className="px-4 py-2 hover:bg-gray-900 flex no-underline hover:no-underline"
+                  className="flex px-4 py-2 no-underline hover:bg-gray-900 hover:no-underline"
                 >
                   <div>
                     <svg
-                      className="h-4 w-4"
+                      className="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
                       strokeLinecap="round"
@@ -236,20 +205,30 @@ function Profile() {
                 </a>
 
                 {user && user.nickname === router.query.nickname && (
-                  <Link href="/api/auth/logout">
-                    <a className="px-4 py-2 pb-4 hover:bg-gray-900 flex no-underline hover:no-underline border-t border-gray-600">
-                      <p className="text-sm font-medium leading-none text-red-500">
-                        Logout
-                      </p>
-                    </a>
-                  </Link>
+                  <div className="border-t border-gray-600">
+                    <Link href={`/${user.nickname}/edit`}>
+                      <a className="flex px-4 py-2 pb-4 text-gray-200 no-underline hover:bg-gray-900 hover:no-underline">
+                        <p className="text-sm font-medium leading-none">
+                          Manage Your Account
+                        </p>
+                      </a>
+                    </Link>
+
+                    <Link href="/api/auth/logout">
+                      <a className="flex px-4 py-2 pb-4 no-underline hover:bg-gray-900 hover:no-underline">
+                        <p className="text-sm font-medium leading-none text-red-500">
+                          Logout
+                        </p>
+                      </a>
+                    </Link>
+                  </div>
                 )}
               </div>
             </Box>
             {/* Gallery */}
             <Box
               header="Gallery"
-              className="col-span-4 md:col-span-3 h-full p-8 lg:p-16"
+              className="h-full col-span-4 p-8 md:col-span-3 lg:p-16"
             >
               Coming soon!
             </Box>
@@ -258,7 +237,7 @@ function Profile() {
       </div>
 
       <div className="lg:px-4">
-        <div className="max-w-none lg:max-w-7xl mx-auto my-0 lg:my-8">
+        <div className="mx-auto my-0 max-w-none lg:max-w-7xl lg:my-8">
           <Box header="Reviews" className="p-8 lg:p-16">
             Coming soon!
           </Box>
