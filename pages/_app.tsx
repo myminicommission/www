@@ -1,5 +1,6 @@
 import { UserProvider, useUser } from "@auth0/nextjs-auth0";
 import { AppProps /*, AppContext */ } from "next/app";
+import { withUrqlClient } from "next-urql";
 import Header from "../components/Header";
 import "../styles/globals.css";
 
@@ -36,4 +37,7 @@ function ContentWrapper({ Component, pageProps }: AppProps) {
 //   return { ...appProps }
 // }
 
-export default MyApp;
+export default withUrqlClient(() => ({
+  url: "/api/graphql",
+  requestPolicy: "cache-and-network",
+}))(MyApp);

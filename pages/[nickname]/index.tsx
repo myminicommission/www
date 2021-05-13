@@ -1,8 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { withUrqlClient } from "next-urql";
-import { useQuery } from "urql";
+import { useQuery, gql } from "urql";
 import { useUser } from "@auth0/nextjs-auth0";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,24 +13,24 @@ import {
 import Box from "../../components/Box";
 import FourOhFour from "../404";
 
-const USER_WITH_NICKNAME_QUERY = `
-query GetUser($nickname: String!) {
-  userWithNickname(nname: $nickname) {
-    name
-    picture
-    forHire
-    socials {
-      facebook
-      instagram
-      twitch
-      twitter
+const USER_WITH_NICKNAME_QUERY = gql`
+  query GetUser($nickname: String!) {
+    userWithNickname(nname: $nickname) {
+      name
+      picture
+      forHire
+      socials {
+        facebook
+        instagram
+        twitch
+        twitter
+      }
     }
   }
-}
 `;
 
 function Profile() {
-  const { user, error, isLoading } = useUser();
+  const { user, isLoading } = useUser();
   const router = useRouter();
   const [result] = useQuery({
     pause: !router.query.nickname,
@@ -90,7 +89,7 @@ function Profile() {
                   <p className="pt-2 text-lg font-semibold">{name}</p>
                   {forHire && (
                     <div className="w-full mt-5">
-                      <Link href={`/${user.nickname}/edit`}>
+                      <Link href={`/${user.nickname}/hire`}>
                         <a className="block w-full px-4 py-2 font-semibold bg-green-900 border border-green-500 hover:border-green-200 hover:bg-green-700 hover:no-underline">
                           Hire Me
                         </a>
@@ -105,6 +104,7 @@ function Profile() {
                   {socials.facebook && (
                     <a
                       href={socials.facebook}
+                      target="blank"
                       className="flex px-4 py-2 no-underline hover:bg-gray-900 hover:no-underline"
                     >
                       <div>
@@ -124,6 +124,7 @@ function Profile() {
                   {socials.instagram && (
                     <a
                       href={socials.instagram}
+                      target="blank"
                       className="flex px-4 py-2 no-underline hover:bg-gray-900 hover:no-underline"
                     >
                       <div>
@@ -143,6 +144,7 @@ function Profile() {
                   {socials.twitch && (
                     <a
                       href={socials.twitch}
+                      target="blank"
                       className="flex px-4 py-2 no-underline hover:bg-gray-900 hover:no-underline"
                     >
                       <div>
@@ -159,6 +161,7 @@ function Profile() {
                   {socials.twitter && (
                     <a
                       href={socials.twitter}
+                      target="blank"
                       className="flex px-4 py-2 no-underline hover:bg-gray-900 hover:no-underline"
                     >
                       <div>
@@ -247,6 +250,4 @@ function Profile() {
   );
 }
 
-export default withUrqlClient(() => ({
-  url: "/api/graphql",
-}))(Profile);
+export default Profile;

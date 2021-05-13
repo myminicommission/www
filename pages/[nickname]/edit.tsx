@@ -2,34 +2,33 @@ import { ChangeEvent, ChangeEventHandler, useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { withUrqlClient } from "next-urql";
 import Box from "../../components/Box";
-import { useQuery, useMutation } from "urql";
+import { gql, useQuery, useMutation } from "urql";
 import FourOhFour from "../404";
 
-const USER_WITH_NICKNAME_QUERY = `
-query GetUser($nickname: String!) {
-  userWithNickname(nname: $nickname) {
-    id
-    name
-    picture
-    forHire
-    socials {
-      facebook
-      instagram
-      twitch
-      twitter
+const USER_WITH_NICKNAME_QUERY = gql`
+  query GetUser($nickname: String!) {
+    userWithNickname(nname: $nickname) {
+      id
+      name
+      picture
+      forHire
+      socials {
+        facebook
+        instagram
+        twitch
+        twitter
+      }
     }
   }
-}
 `;
 
-const UPDATE_PROFILE_MUTATION = `
-mutation UpdateProfile($input: ProfileInput!) {
-  updateProfile(input: $input) {
-    success
+const UPDATE_PROFILE_MUTATION = gql`
+  mutation UpdateProfile($input: ProfileInput!) {
+    updateProfile(input: $input) {
+      success
+    }
   }
-}
 `;
 
 type TextInputProps = {
@@ -297,6 +296,4 @@ function ProfileEditor() {
   );
 }
 
-export default withUrqlClient(() => ({
-  url: "/api/graphql",
-}))(ProfileEditor);
+export default ProfileEditor;
