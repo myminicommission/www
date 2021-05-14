@@ -61,6 +61,7 @@ function Profile() {
     );
   }
 
+  const { nickname } = router.query;
   const { name, picture, socials, forHire } = result.data.userWithNickname;
 
   return (
@@ -89,7 +90,7 @@ function Profile() {
                   <p className="pt-2 text-lg font-semibold">{name}</p>
                   {forHire && (
                     <div className="w-full mt-5">
-                      <Link href={`/${user.nickname}/hire`}>
+                      <Link href={`/${nickname}/hire`}>
                         <a className="block w-full px-4 py-2 font-semibold bg-green-900 border border-green-500 hover:border-green-200 hover:bg-green-700 hover:no-underline">
                           Hire Me
                         </a>
@@ -209,7 +210,7 @@ function Profile() {
 
                 {user && user.nickname === router.query.nickname && (
                   <div className="border-t border-gray-600">
-                    <Link href={`/${user.nickname}/edit`}>
+                    <Link href={`/${nickname}/edit`}>
                       <a className="flex px-4 py-2 pb-4 text-gray-200 no-underline hover:bg-gray-900 hover:no-underline">
                         <p className="text-sm font-medium leading-none">
                           Manage Your Account

@@ -1,10 +1,11 @@
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Box from "../../components/Box";
 import { gql, useQuery, useMutation } from "urql";
 import FourOhFour from "../404";
+import TextInput from "../../components/input/TextInput";
 
 const USER_WITH_NICKNAME_QUERY = gql`
   query GetUser($nickname: String!) {
@@ -30,42 +31,6 @@ const UPDATE_PROFILE_MUTATION = gql`
     }
   }
 `;
-
-type TextInputProps = {
-  id: string;
-  label: string;
-  defaultValue: string | null;
-  onChange: ChangeEventHandler;
-  hint?: string;
-};
-function TextInput({
-  id,
-  label,
-  defaultValue,
-  hint,
-  onChange,
-}: TextInputProps) {
-  return (
-    <div className="flex flex-wrap mb-6 -mx-3">
-      <div className="w-full px-3">
-        <label
-          className="block mb-2 text-xs font-bold tracking-wide text-gray-200 uppercase"
-          htmlFor={`${id}Field`}
-        >
-          {label}
-        </label>
-        <input
-          className="block w-full px-4 py-3 mb-3 leading-tight text-gray-200 bg-gray-700 border border-gray-200 rounded "
-          id={`${id}Field`}
-          type="text"
-          defaultValue={defaultValue}
-          onChange={onChange}
-        />
-        {hint && <p className="text-xs italic text-gray-400">{hint}</p>}
-      </div>
-    </div>
-  );
-}
 
 function ProfileEditor() {
   const { user, error, isLoading } = useUser();
