@@ -29,6 +29,11 @@ const USER_WITH_NICKNAME_QUERY = gql`
   }
 `;
 
+const defaultSelectedMini = {
+  value: "none",
+  label: "Select Mini...",
+};
+
 const games = [
   { value: "wh40k", label: "Warhammer: 40,000" },
   { value: "whaos", label: "Warhammer: Age of Sigmar" },
@@ -68,6 +73,9 @@ function Hire() {
     label: "Select Game...",
   });
   const [gameMinis, setGameMinis] = useState([]);
+  const [selectedMini, setSelectedMini] = useState(defaultSelectedMini);
+  const [selectedQty, setSelectedQty] = useState(0);
+  const [lineItems, setLineItems] = useState([]);
 
   // when the selected game changes, fetch the related minis
   useEffect(() => {
@@ -114,6 +122,30 @@ function Hire() {
     }
   };
 
+  const handleMiniChange = ({ target }) => {
+    const { value } = target;
+
+    // find the mini
+    const matches = minis[selectedGame.value].filter(
+      (mini) => mini.value === value
+    );
+    if (matches.length === 1) {
+      setSelectedMini(matches[0]);
+    }
+  };
+
+  const handleMiniAddClick = () => {
+    const lineItem = {
+      game: selectedGame,
+      mini: selectedMini,
+      qty: selectedQty,
+    };
+
+    setLineItems([...lineItems, lineItem]);
+    setSelectedQty(0);
+    setSelectedMini(defaultSelectedMini);
+  };
+
   return (
     <Page>
       <Paper padding="md" shadow="xs">
@@ -133,7 +165,7 @@ function Hire() {
             label="Game"
             description="To which game do the minis belong?"
             required
-            value={selectedGame.value !== "none" ? selectedGame.value : null}
+            value={selectedGame.value !== "none" ? selectedGame.value : ""}
             onChange={handleGameChange}
           />
         </Field>
@@ -148,19 +180,29 @@ function Hire() {
                 label="Add a Mini"
                 description="Select the mini you want to add to the commission"
                 required
+                value={selectedMini.value !== "none" ? selectedMini.value : ""}
+                onChange={handleMiniChange}
               />
             </Col>
             <Col span={2}>
               <NumberInput
-                defaultValue={1}
+                value={selectedQty}
                 placeholder="Quantity"
                 label="Quantity"
                 description="Number of these minis to add"
                 required
+                disabled={selectedMini.value === "none"}
+                onChange={(val) => setSelectedQty(val)}
               />
             </Col>
             <Col span={1}>
-              <Button size="lg">Add</Button>
+              <Button
+                size="lg"
+                onClick={handleMiniAddClick}
+                disabled={selectedQty === 0 || selectedMini.value === "none"}
+              >
+                Add
+              </Button>
             </Col>
           </Grid>
         </Field>
