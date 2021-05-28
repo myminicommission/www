@@ -16,6 +16,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@heroicons/react": "^1.0.1",
+    "@mantine/core": "^1.2.1",
+    "@mantine/hooks": "^1.2.1",
     "@tailwindcss/forms": "^0.3.2",
     "@windmill/react-ui": "^0.5.1",
     "autoprefixer": "^10.2.4",
@@ -28,6 +30,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-is": "^17.0.2",
+    "react-jss": "^10.6.0",
     "tailwindcss": "^2.0.3",
     "urql": "^2.0.2"
   },

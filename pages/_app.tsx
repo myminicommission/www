@@ -1,3 +1,4 @@
+import { MantineProvider } from "@mantine/core";
 import { UserProvider, useUser } from "@auth0/nextjs-auth0";
 import { AppProps /*, AppContext */ } from "next/app";
 import { withUrqlClient } from "next-urql";
@@ -18,10 +19,12 @@ function ContentWrapper({ Component, pageProps }: AppProps) {
   if (error) console.error(error);
 
   return (
-    <div className="mx-auto">
-      <Header user={user} />
-      <Component {...pageProps} />
-    </div>
+    <MantineProvider theme={{ colorScheme: "dark" }}>
+      <div className="mx-auto">
+        <Header user={user} />
+        <Component {...pageProps} />
+      </div>
+    </MantineProvider>
   );
 }
 
