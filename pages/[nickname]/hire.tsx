@@ -59,6 +59,28 @@ const minis = {
   ],
 };
 
+function addToLineItems(item, lineItems) {
+  // is the incoming line item already in the collection?
+  const matches = lineItems.filter((it) => it.mini.value === item.mini.value);
+
+  // no matches were found
+  if (!matches.length) {
+    // append item to lineItems
+    return [...lineItems, item];
+  }
+
+  let items = [];
+  lineItems.forEach((it) => {
+    if (it.mini.value === item.mini.value) {
+      it.qty = it.qty + item.qty;
+    }
+
+    items.push(it);
+  });
+
+  return items;
+}
+
 function Hire() {
   const { user, isLoading } = useUser();
   const router = useRouter();
@@ -142,7 +164,7 @@ function Hire() {
       qty: selectedQty,
     };
 
-    setLineItems([...lineItems, lineItem]);
+    setLineItems(addToLineItems(lineItem, lineItems));
     setSelectedQty(0);
     setSelectedMini(defaultSelectedMini);
   };
