@@ -1,24 +1,15 @@
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
-import {
-  Button,
-  Col,
-  Divider,
-  Grid,
-  NumberInput,
-  Paper,
-  Select,
-  TextInput,
-  Title,
-} from "@mantine/core";
+import { Col, Divider, Grid, Paper, Title } from "@mantine/core";
 import { gql } from "@urql/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "urql";
-import Field from "../../components/form/Field";
+import HireForm from "../../components/hire/HireForm";
 import Summary from "../../components/hire/Summary";
 import Page from "../../components/Page";
 import PageLoader from "../../components/PageLoader";
+import { LineItem } from "../../types/hire";
 import FourOhFour from "../404";
 
 const USER_WITH_NICKNAME_QUERY = gql`
@@ -30,36 +21,7 @@ const USER_WITH_NICKNAME_QUERY = gql`
   }
 `;
 
-const defaultSelectedMini = {
-  value: "none",
-  label: "Select Mini...",
-};
-
-const games = [
-  { value: "wh40k", label: "Warhammer: 40,000" },
-  { value: "whaos", label: "Warhammer: Age of Sigmar" },
-  { value: "swlegion", label: "Star Wars: Legion" },
-  { value: "infinity", label: "Infinity" },
-];
-
-const minis = {
-  wh40k: [{ value: "drukhari-raider", label: "Drukhari: Raider" }],
-  whaos: [
-    {
-      value: "slaanesh-exalted-seeker-chariot",
-      label: "Exalted Seeker Chariot",
-    },
-  ],
-  swlegion: [{ value: "empire-at-st", label: "Empire: AT-ST" }],
-  infinity: [
-    {
-      value: "raoul-spector-mercenary-operative",
-      label: "Raoul Spector, Mercenary Operative",
-    },
-  ],
-};
-
-function addToLineItems(item, lineItems) {
+function addToLineItems(item: LineItem, lineItems: LineItem[]): LineItem[] {
   // is the incoming line item already in the collection?
   const matches = lineItems.filter((it) => it.mini.value === item.mini.value);
 
@@ -69,7 +31,7 @@ function addToLineItems(item, lineItems) {
     return [...lineItems, item];
   }
 
-  let items = [];
+  let items: LineItem[] = [];
   lineItems.forEach((it) => {
     if (it.mini.value === item.mini.value) {
       it.qty = it.qty + item.qty;
@@ -91,21 +53,8 @@ function Hire() {
       nickname: router.query.nickname,
     },
   });
-  const [selectedGame, setSelectedGame] = useState({
-    value: "none",
-    label: "Select Game...",
-  });
-  const [gameMinis, setGameMinis] = useState([]);
-  const [selectedMini, setSelectedMini] = useState(defaultSelectedMini);
-  const [selectedQty, setSelectedQty] = useState(0);
-  const [lineItems, setLineItems] = useState([]);
 
-  // when the selected game changes, fetch the related minis
-  useEffect(() => {
-    if (selectedGame.value !== "none") {
-      setGameMinis(minis[selectedGame.value]);
-    }
-  }, [selectedGame, setGameMinis]);
+  const [lineItems, setLineItems] = useState<LineItem[]>([]);
 
   if (!router.query.nickname || result.fetching || isLoading) {
     return <PageLoader />;
@@ -135,118 +84,31 @@ function Hire() {
     return <PageLoader />;
   }
 
-  const handleGameChange = ({ target }) => {
-    const { value } = target;
-
-    // find the game
-    const matches = games.filter((game) => game.value === value);
-    if (matches.length === 1) {
-      setSelectedGame(matches[0]);
-    }
-  };
-
-  const handleMiniChange = ({ target }) => {
-    const { value } = target;
-
-    // find the mini
-    const matches = minis[selectedGame.value].filter(
-      (mini) => mini.value === value
-    );
-    if (matches.length === 1) {
-      setSelectedMini(matches[0]);
-    }
-  };
-
-  const handleMiniAddClick = () => {
-    const lineItem = {
-      game: selectedGame,
-      mini: selectedMini,
-      qty: selectedQty,
-    };
-
+  const handleItemAdded = (lineItem: LineItem) => {
     setLineItems(addToLineItems(lineItem, lineItems));
-    setSelectedQty(0);
-    setSelectedMini(defaultSelectedMini);
   };
 
   return (
     <Page>
       <Grid gutter="lg">
-        <Col span={8}>
+        <Col span={7}>
           <Paper padding="md" shadow="xs">
             <Title order={2}>Hire {name}</Title>
             <Title order={4}>{nickname}</Title>
 
             <Divider />
 
-            <Field>
-              <TextInput
-                label="Requested By"
-                disabled
-                defaultValue={user.name}
-              />
-            </Field>
-
-            <Field>
-              <Select
-                data={games.sort((a, b) => (a.label > b.label ? 1 : -1))}
-                placeholder="Select a game..."
-                label="Game"
-                description="To which game do the minis belong?"
-                required
-                value={selectedGame.value !== "none" ? selectedGame.value : ""}
-                onChange={handleGameChange}
-              />
-            </Field>
-
-            <Field>
-              <Grid align="flex-end" grow>
-                <Col span={7}>
-                  <Select
-                    disabled={!gameMinis.length}
-                    data={gameMinis.sort((a, b) =>
-                      a.label > b.label ? 1 : -1
-                    )}
-                    placeholder="Select a mini..."
-                    label="Add a Mini"
-                    description="Select the mini you want to add to the commission"
-                    required
-                    value={
-                      selectedMini.value !== "none" ? selectedMini.value : ""
-                    }
-                    onChange={handleMiniChange}
-                  />
-                </Col>
-                <Col span={3}>
-                  <NumberInput
-                    value={selectedQty}
-                    placeholder="Quantity"
-                    label="Quantity"
-                    description="Number of these minis to add"
-                    required
-                    disabled={selectedMini.value === "none"}
-                    onChange={(val) => setSelectedQty(val)}
-                  />
-                </Col>
-                <Col span={1}>
-                  <Button
-                    fullWidth
-                    size="lg"
-                    onClick={handleMiniAddClick}
-                    disabled={
-                      selectedQty === 0 || selectedMini.value === "none"
-                    }
-                  >
-                    Add
-                  </Button>
-                </Col>
-              </Grid>
-            </Field>
+            <HireForm clientName={user.name} onItemAdded={handleItemAdded} />
           </Paper>
         </Col>
 
-        <Col span={4}>
-          <Summary lineItems={lineItems} />
+        <Col span={5}>
+          <Summary
+            lineItems={lineItems}
+            onItemRemoved={(mini) => {
+              console.log(mini);
+            }}
+          />
         </Col>
       </Grid>
     </Page>

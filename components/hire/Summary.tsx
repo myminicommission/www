@@ -1,34 +1,61 @@
-import { Divider, Paper, Title } from "@mantine/core";
+import { Divider, Paper, Table, Title } from "@mantine/core";
+import { LineItem } from "../../types/hire";
 
-function SummarySection({ label, minis }) {
+type SummarySectionProps = {
+  label: String;
+  minis: [
+    {
+      value: String;
+      label: String;
+      qty: Number;
+    }
+  ];
+};
+
+type SummaryProps = {
+  lineItems: LineItem[];
+  onItemRemoved: (mini: { value: String; qty: Number }) => void;
+};
+
+function SummarySection({ label, minis }: SummarySectionProps) {
   console.log(label, minis);
   return (
     <div>
       <Title order={4}>{label}</Title>
-      <ul>
-        {minis.map((mini) => (
-          <li>
-            {mini.qty} x {mini.label}
-          </li>
-        ))}
-      </ul>
+      <Divider variant="dotted" />
+      <Table>
+        <thead>
+          <tr>
+            <th>Qty</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {minis.map((mini) => (
+            <tr key={`mini-${mini.value}`}>
+              <td>{mini.qty}</td>
+              <td>{mini.label}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </div>
   );
 }
 
-export default function Summary({ lineItems }) {
+export default function Summary({ lineItems }: SummaryProps) {
   const sortedLineItems = {};
   lineItems.forEach((li) => {
-    if (sortedLineItems[li.game.value] === undefined) {
-      sortedLineItems[li.game.value] = {
+    if (sortedLineItems[`${li.game.value}`] === undefined) {
+      sortedLineItems[`${li.game.value}`] = {
         id: li.game.value,
         label: li.game.label,
         minis: [],
       };
     }
 
-    sortedLineItems[li.game.value].minis = [
-      ...sortedLineItems[li.game.value].minis,
+    sortedLineItems[`${li.game.value}`].minis = [
+      ...sortedLineItems[`${li.game.value}`].minis,
       { ...li.mini, qty: li.qty },
     ].sort((a, b) => (a.label > b.label ? 1 : -1));
   });
@@ -36,14 +63,16 @@ export default function Summary({ lineItems }) {
   return (
     <Paper padding="md" shadow="xs">
       <Title order={2}>Summary</Title>
-      <Divider />
 
       {Object.keys(sortedLineItems).map((key) => (
-        <div>
-          <SummarySection
-            label={sortedLineItems[key].label}
-            minis={sortedLineItems[key].minis}
-          />
+        <div className="pt-3">
+          <Divider />
+          <div className="pt-3">
+            <SummarySection
+              label={sortedLineItems[key].label}
+              minis={sortedLineItems[key].minis}
+            />
+          </div>
         </div>
       ))}
     </Paper>
