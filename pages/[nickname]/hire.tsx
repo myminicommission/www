@@ -1,5 +1,5 @@
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { Col, Divider, Grid, Paper, Title } from "@mantine/core";
+import { Button, Col, Divider, Grid, Group, Paper, Title } from "@mantine/core";
 import { gql } from "@urql/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -88,6 +88,11 @@ function Hire() {
     setLineItems(addToLineItems(lineItem, lineItems));
   };
 
+  const handleCancelClick = () => {
+    router.push(`/${nickname}`);
+    return <PageLoader />;
+  };
+
   return (
     <Page>
       <Grid gutter="lg">
@@ -99,6 +104,15 @@ function Hire() {
             <Divider />
 
             <HireForm onItemAdded={handleItemAdded} />
+          </Paper>
+
+          <Paper padding="md" shadow="xs" className="mt-5">
+            <Group position="right">
+              <Button variant="outline" color="red" onClick={handleCancelClick}>
+                Cancel
+              </Button>
+              <Button disabled={!lineItems.length}>Submit</Button>
+            </Group>
           </Paper>
         </Col>
 
