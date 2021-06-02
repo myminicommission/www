@@ -44,7 +44,6 @@ const minis = {
  */
 
 type HireFormProps = {
-  clientName: string;
   onItemAdded: (item: LineItem) => void;
 };
 
@@ -53,7 +52,7 @@ const defaultSelectedMini = {
   label: "Select Mini...",
 };
 
-export default function HireForm({ clientName, onItemAdded }: HireFormProps) {
+export default function HireForm({ onItemAdded }: HireFormProps) {
   const [selectedGame, setSelectedGame] = useState({
     value: "none",
     label: "Select Game...",
@@ -111,10 +110,6 @@ export default function HireForm({ clientName, onItemAdded }: HireFormProps) {
 
   return (
     <div>
-      <Field>
-        <TextInput label="Requested By" disabled defaultValue={clientName} />
-      </Field>
-
       <Field>
         <Select
           data={games.sort((a, b) => (a.label > b.label ? 1 : -1))}

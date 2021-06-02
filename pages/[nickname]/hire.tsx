@@ -98,7 +98,7 @@ function Hire() {
 
             <Divider />
 
-            <HireForm clientName={user.name} onItemAdded={handleItemAdded} />
+            <HireForm onItemAdded={handleItemAdded} />
           </Paper>
         </Col>
 
