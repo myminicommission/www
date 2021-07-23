@@ -1,5 +1,5 @@
 import { Divider, Paper, Table, Title } from "@mantine/core";
-import { LineItem } from "../../types/hire";
+import { LineItem, MiniWithQuantity } from "../../types/hire";
 
 type SummarySectionProps = {
   label: String;
@@ -14,7 +14,7 @@ type SummarySectionProps = {
 
 type SummaryProps = {
   lineItems: LineItem[];
-  onItemRemoved: (mini: { value: String; qty: Number }) => void;
+  onItemRemoved: (miniWithQty: MiniWithQuantity) => void;
 };
 
 function SummarySection({ label, minis }: SummarySectionProps) {

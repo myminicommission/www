@@ -3,13 +3,14 @@ import { Button, Col, Divider, Grid, Group, Paper, Title } from "@mantine/core";
 import { gql } from "@urql/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { useQuery } from "urql";
+import { useEffect } from "react";
+import { useState, MouseEvent } from "react";
+import { useQuery, useMutation } from "urql";
 import HireForm from "../../components/hire/HireForm";
 import Summary from "../../components/hire/Summary";
 import Page from "../../components/Page";
 import PageLoader from "../../components/PageLoader";
-import { LineItem } from "../../types/hire";
+import { LineItem, MiniWithQuantity } from "../../types/hire";
 import FourOhFour from "../404";
 
 const USER_WITH_NICKNAME_QUERY = gql`
@@ -17,6 +18,14 @@ const USER_WITH_NICKNAME_QUERY = gql`
     userWithNickname(nname: $nickname) {
       name
       forHire
+    }
+  }
+`;
+
+const NEW_COMMISSION_QUERY = gql`
+  mutation NewCommission($input: NewCommission!) {
+    newCommission(input: $input) {
+      id
     }
   }
 `;
@@ -44,6 +53,7 @@ function addToLineItems(item: LineItem, lineItems: LineItem[]): LineItem[] {
 }
 
 function Hire() {
+  const [loading, setLoading] = useState(false);
   const { user, isLoading } = useUser();
   const router = useRouter();
   const [result] = useQuery({
@@ -53,10 +63,20 @@ function Hire() {
       nickname: router.query.nickname,
     },
   });
+  const [mutationResult, newCommissionMutation] = useMutation(
+    NEW_COMMISSION_QUERY
+  );
 
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
 
-  if (!router.query.nickname || result.fetching || isLoading) {
+  useEffect(() => {
+    setLoading(false);
+    if (mutationResult?.data?.newCommission?.id) {
+      router.push(`/commission/${mutationResult?.data?.newCommission?.id}`);
+    }
+  }, [mutationResult, setLoading]);
+
+  if (!router.query.nickname || result.fetching || isLoading || loading) {
     return <PageLoader />;
   }
 
@@ -93,6 +113,29 @@ function Hire() {
     return <PageLoader />;
   };
 
+  const handleSubmitClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    console.log("Submit clicked!");
+    newCommissionMutation({
+      input: {
+        artistNickname: router.query.nickname,
+        comments: "",
+        minis: lineItems.map((item) => ({
+          id: item.mini.value,
+          quantity: item.qty,
+          name: item.mini.label,
+          size: "MEDIUM",
+          notes: "",
+        })),
+      },
+    });
+    setLoading(true);
+  };
+
+  const handleItemRemoved = (mini: MiniWithQuantity) => {
+    console.log(mini);
+  };
+
   return (
     <Page>
       <Grid gutter="lg">
@@ -111,18 +154,15 @@ function Hire() {
               <Button variant="outline" color="red" onClick={handleCancelClick}>
                 Cancel
               </Button>
-              <Button disabled={!lineItems.length}>Submit</Button>
+              <Button disabled={!lineItems.length} onClick={handleSubmitClick}>
+                Submit
+              </Button>
             </Group>
           </Paper>
         </Col>
 
         <Col span={5}>
-          <Summary
-            lineItems={lineItems}
-            onItemRemoved={(mini) => {
-              console.log(mini);
-            }}
-          />
+          <Summary lineItems={lineItems} onItemRemoved={handleItemRemoved} />
         </Col>
       </Grid>
     </Page>
