@@ -5,13 +5,10 @@ import { useUser } from "@auth0/nextjs-auth0";
 import FourOhFour from "../404";
 import {
   ContactMeLink,
-  LogoutLink,
-  ManageAccountLink,
   PanelHeader,
   SocialLinkList,
 } from "../../components/profile/ProfileInfoPanel";
 import PageLoader from "../../components/PageLoader";
-import { Col, Grid, Text, Title } from "@mantine/core";
 import Page from "../../components/Page";
 import { Paper } from "../../components/containers";
 import Divider from "../../components/Divider";
@@ -75,9 +72,9 @@ function Profile() {
       </Head>
 
       <Page>
-        <Grid grow gutter="xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* User Info */}
-          <Col span={3}>
+          <div className="lg:col-span-3">
             <Paper>
               <Paper.Content>
                 <PanelHeader
@@ -98,24 +95,24 @@ function Profile() {
                 <ContactMeLink />
               </div>
             </Paper>
-          </Col>
+          </div>
 
           {/* Gallery */}
-          <Col span={9}>
+          <div className="lg:col-span-9">
             <Paper className="h-full">
               <Paper.Content>
-                <Title order={3}>Gallery</Title>
-                <Text>Coming soon!</Text>
+                <h2 className="font-bold text-2xl">Gallery</h2>
+                <p>Coming soon!</p>
               </Paper.Content>
             </Paper>
-          </Col>
-        </Grid>
+          </div>
+        </div>
 
         <div className="mx-auto my-0 max-w-none lg:max-w-7xl lg:my-6">
           <Paper>
             <Paper.Content>
-              <Title order={3}>Reviews</Title>
-              <Text>Coming soon!</Text>
+              <h2 className="font-bold text-2xl">Reviews</h2>
+              <p>Coming soon!</p>
             </Paper.Content>
           </Paper>
         </div>
