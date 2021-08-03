@@ -145,9 +145,7 @@ function Hire() {
         <div className="lg:col-span-3">
           <Paper>
             <Paper.Content>
-              <h1 className="text-2xl leading-6 font-bold text-gray-100">
-                Hire {name}
-              </h1>
+              <h1 className="text-2xl leading-6 font-bold">Hire {name}</h1>
               <p className="text-md text-gray-500">
                 <Link href={`/${nickname}`}>
                   <a>@{nickname}</a>

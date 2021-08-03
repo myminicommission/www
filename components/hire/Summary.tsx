@@ -80,7 +80,7 @@ export default function Summary({ lineItems }: SummaryProps) {
 
   return (
     <>
-      <h2 className="text-2xl leading-6 font-bold text-gray-100">Summary</h2>
+      <h2 className="text-2xl leading-6 font-bold">Summary</h2>
 
       {Object.keys(sortedLineItems).map((key) => (
         <div key={`game-${key}`} className="pt-3">
