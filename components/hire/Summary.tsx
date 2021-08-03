@@ -1,5 +1,5 @@
-import { Divider, Table, Title } from "@mantine/core";
 import { LineItem, MiniWithQuantity } from "../../types/hire";
+import Divider from "../Divider";
 
 type SummarySectionProps = {
   label: String;
@@ -21,24 +21,42 @@ function SummarySection({ label, minis }: SummarySectionProps) {
   console.log(label, minis);
   return (
     <div>
-      <Title order={4}>{label}</Title>
-      <Divider variant="dotted" />
-      <Table>
+      <h4 className="font-bold">{label}</h4>
+      <Divider />
+
+      <table className="min-w-full divide-y divide-gray-600">
         <thead>
           <tr>
-            <th>Qty</th>
-            <th>Name</th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+            >
+              Qty
+            </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+            >
+              Name
+            </th>
           </tr>
         </thead>
         <tbody>
-          {minis.map((mini) => (
-            <tr key={`mini-${mini.value}`}>
-              <td>{mini.qty}</td>
-              <td>{mini.label}</td>
+          {minis.map((mini, i) => (
+            <tr
+              key={`mini-${mini.value}`}
+              className={i % 2 === 0 ? "" : "bg-gray-700"}
+            >
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                {mini.qty}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm">
+                {mini.label}
+              </td>
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
     </div>
   );
 }
