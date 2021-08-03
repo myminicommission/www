@@ -7,6 +7,7 @@ type SelectProps = {
   required?: boolean;
   className?: string;
   defaultValue?: string;
+  value?: string;
   children?:
     | React.ReactElement<OptionProps>
     | React.ReactElement<OptionProps>[];
@@ -17,7 +18,6 @@ type SelectProps = {
 type OptionProps = {
   children: string;
   value?: string;
-  selected?: boolean;
   disabled?: boolean;
 };
 
@@ -44,6 +44,7 @@ export function Select({
   required,
   className,
   defaultValue,
+  value,
   children,
   onChange,
   disabled,
@@ -58,6 +59,7 @@ export function Select({
         name={elementID}
         className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-600 bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md ${className}`}
         defaultValue={defaultValue}
+        value={value}
         onChange={onChange}
         disabled={disabled}
       >
@@ -67,9 +69,9 @@ export function Select({
   );
 }
 
-export function Option({ children, value, disabled, selected }: OptionProps) {
+export function Option({ children, value, disabled }: OptionProps) {
   return (
-    <option selected={selected} disabled={disabled} value={value}>
+    <option disabled={disabled} value={value}>
       {children}
     </option>
   );

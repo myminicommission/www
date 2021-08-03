@@ -138,8 +138,9 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
           required
           onChange={handleGameChange}
           disabled={gamesResult.fetching}
+          value={selectedGame.value}
         >
-          <Option selected disabled>
+          <Option disabled value="none">
             Select a game...
           </Option>
           {games.map((game) => (
@@ -158,12 +159,13 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
               label="Add a Mini"
               required
               onChange={handleMiniChange}
+              value={
+                selectedMini?.value
+                  ? selectedMini.value
+                  : defaultSelectedMini.value
+              }
             >
-              <Option
-                selected={selectedMini === defaultSelectedMini}
-                disabled
-                value={defaultSelectedMini.value}
-              >
+              <Option disabled value={defaultSelectedMini.value}>
                 {defaultSelectedMini.label}
               </Option>
               {sortByName(gameMinis).map((mini) => (

@@ -65,7 +65,7 @@ export default function Summary({ lineItems }: SummaryProps) {
       <h2 className="text-2xl leading-6 font-bold text-gray-100">Summary</h2>
 
       {Object.keys(sortedLineItems).map((key) => (
-        <div className="pt-3">
+        <div key={`game-${key}`} className="pt-3">
           <Divider />
           <div className="pt-3">
             <SummarySection
