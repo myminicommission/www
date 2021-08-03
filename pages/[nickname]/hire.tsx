@@ -66,9 +66,8 @@ function Hire() {
       nickname: router.query.nickname,
     },
   });
-  const [mutationResult, newCommissionMutation] = useMutation(
-    NEW_COMMISSION_QUERY
-  );
+  const [mutationResult, newCommissionMutation] =
+    useMutation(NEW_COMMISSION_QUERY);
 
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
 
@@ -167,7 +166,14 @@ function Hire() {
         </Col>
 
         <Col span={5}>
-          <Summary lineItems={lineItems} onItemRemoved={handleItemRemoved} />
+          <Paper>
+            <Paper.Content>
+              <Summary
+                lineItems={lineItems}
+                onItemRemoved={handleItemRemoved}
+              />
+            </Paper.Content>
+          </Paper>
         </Col>
       </Grid>
     </Page>

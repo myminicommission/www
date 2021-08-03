@@ -61,7 +61,7 @@ export default function Summary({ lineItems }: SummaryProps) {
   });
 
   return (
-    <Paper padding="md" shadow="xs">
+    <>
       <Title order={2}>Summary</Title>
 
       {Object.keys(sortedLineItems).map((key) => (
@@ -75,6 +75,6 @@ export default function Summary({ lineItems }: SummaryProps) {
           </div>
         </div>
       ))}
-    </Paper>
+    </>
   );
 }
