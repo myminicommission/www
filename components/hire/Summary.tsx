@@ -1,4 +1,4 @@
-import { Divider, Paper, Table, Title } from "@mantine/core";
+import { Divider, Table, Title } from "@mantine/core";
 import { LineItem, MiniWithQuantity } from "../../types/hire";
 
 type SummarySectionProps = {
