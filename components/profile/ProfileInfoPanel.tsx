@@ -66,7 +66,9 @@ export function PanelHeader({ forHire, name, nickname, picture }) {
       {forHire && (
         <div className="w-full mt-5">
           <Link href={`/${nickname}/hire`}>
-            <Button className="w-full h-12">Hire Me</Button>
+            <Button className="w-full" size="xl">
+              Hire Me
+            </Button>
           </Link>
         </div>
       )}

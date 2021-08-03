@@ -87,12 +87,12 @@ export function Button({
 }: ButtonProps) {
   const dims = dimsFromSize(size);
   const color = baseColor ? baseColor : secondary ? "purple" : "green";
-  let classes = `text-white font-bold inline-flex items-center px-${dims.x} py-${dims.y} border border-transparent text-${dims.text} font-medium rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`;
+  let classes = `text-white font-bold inline-flex items-center justify-center px-${dims.x} py-${dims.y} border border-transparent text-${dims.text} font-medium rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`;
 
   if (disabled) {
     classes = classNames(
       classes,
-      `text-gray-600 bg-gray-700 border-gray-900`,
+      "text-gray-600 bg-gray-700 border-gray-900",
       "cursor-not-allowed"
     );
   } else {
@@ -102,11 +102,11 @@ export function Button({
     );
   }
 
-  if (className !== "") {
-    classes = classNames(classes, className);
-  }
+  classes = classNames(classes, className);
+
   return (
     <button
+      type="button"
       className={classes}
       onClick={onClick && !disabled ? onClick : () => {}}
     >
