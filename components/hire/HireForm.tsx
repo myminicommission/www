@@ -1,4 +1,4 @@
-import { Col, Grid, Loader } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { gql, OperationContext } from "@urql/core";
 import { useEffect, useState } from "react";
 import { useQuery } from "urql";
@@ -152,8 +152,8 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
       </Field>
 
       <Field>
-        <Grid align="flex-end" grow>
-          <Col span={8}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-end">
+          <div className="lg:col-span-8">
             <Select
               disabled={minisResult.fetching || !gameMinis.length}
               label="Add a Mini"
@@ -174,8 +174,8 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
                 </Option>
               ))}
             </Select>
-          </Col>
-          <Col span={2}>
+          </div>
+          <div className="lg:col-span-2">
             <NumberInput
               value={selectedQty}
               placeholder="Quantity"
@@ -185,8 +185,8 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
               onChange={(e) => setSelectedQty(parseInt(e.target.value))}
               min={1}
             />
-          </Col>
-          <Col span={1}>
+          </div>
+          <div className="lg:col-span-2">
             <Button
               className="w-full"
               onClick={handleMiniAddClick}
@@ -194,8 +194,8 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
             >
               Add
             </Button>
-          </Col>
-        </Grid>
+          </div>
+        </div>
       </Field>
     </div>
   );
