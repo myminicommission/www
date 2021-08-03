@@ -1,8 +1,10 @@
-import { Button, Col, Grid, Loader, NumberInput, Select } from "@mantine/core";
+import { Col, Grid, Loader, NumberInput } from "@mantine/core";
 import { gql, OperationContext } from "@urql/core";
 import { useEffect, useState } from "react";
 import { useQuery } from "urql";
 import { LineItem } from "../../types/hire";
+import { Button } from "../buttons";
+import { Option, Select } from "../form";
 import Field from "../form/Field";
 
 const GAMES_QUERY = gql`
@@ -23,6 +25,11 @@ const MINIS_QUERY = gql`
   }
 `;
 
+type GameMini = {
+  name: string;
+  id: string;
+};
+
 type HireFormProps = {
   onItemAdded: (item: LineItem) => void;
 };
@@ -32,14 +39,12 @@ const defaultSelectedMini = {
   label: "Select Mini...",
 };
 
-function asSelectData(data) {
-  return data
-    .sort((a, b) => (a.name > b.name ? 1 : -1))
-    .map((it) => ({ value: it.id, label: it.name }));
+function sortByName(data) {
+  return data.sort((a, b) => (a.name > b.name ? 1 : -1));
 }
 
 export default function HireForm({ onItemAdded }: HireFormProps) {
-  const [gameMinis, setGameMinis] = useState([]);
+  const [gameMinis, setGameMinis] = useState<Array<GameMini>>([]);
   const [selectedGame, setSelectedGame] = useState({
     value: "none",
     label: "Select Game...",
@@ -71,15 +76,15 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
   // watch for the game minis to load
   useEffect(() => {
     if (!minisResult?.fetching && minisResult?.data) {
-      setGameMinis(minisResult.data.gameMinis);
+      setGameMinis(sortByName(minisResult.data.gameMinis));
     }
-  }, [minisResult, setGameMinis]);
+  }, [minisResult, setGameMinis, sortByName]);
 
   if (gamesResult.fetching) {
     return <Loader />;
   }
 
-  const { games } = gamesResult.data;
+  const games = sortByName(gamesResult.data.games);
 
   const handleGameChange = ({ target }) => {
     const { value } = target;
@@ -129,14 +134,20 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
     <div>
       <Field>
         <Select
-          data={asSelectData(games)}
-          placeholder="Select a game..."
           label="Game"
           required
-          value={selectedGame.value !== "none" ? selectedGame.value : ""}
           onChange={handleGameChange}
           disabled={gamesResult.fetching}
-        />
+        >
+          <Option selected disabled>
+            Select a game...
+          </Option>
+          {games.map((game) => (
+            <Option key={`game-${game.id}`} value={game.id}>
+              {game.name}
+            </Option>
+          ))}
+        </Select>
       </Field>
 
       <Field>
@@ -144,13 +155,23 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
           <Col span={8}>
             <Select
               disabled={minisResult.fetching || !gameMinis.length}
-              data={asSelectData(gameMinis)}
-              placeholder="Select a mini..."
               label="Add a Mini"
               required
-              value={selectedMini.value !== "none" ? selectedMini.value : ""}
               onChange={handleMiniChange}
-            />
+            >
+              <Option
+                selected={selectedMini === defaultSelectedMini}
+                disabled
+                value={defaultSelectedMini.value}
+              >
+                {defaultSelectedMini.label}
+              </Option>
+              {sortByName(gameMinis).map((mini) => (
+                <Option key={`mini-${mini.id}`} value={mini.id}>
+                  {mini.name}
+                </Option>
+              ))}
+            </Select>
           </Col>
           <Col span={2}>
             <NumberInput
@@ -165,8 +186,7 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
           </Col>
           <Col span={1}>
             <Button
-              fullWidth
-              size="lg"
+              className="w-full"
               onClick={handleMiniAddClick}
               disabled={selectedMini.value === "none"}
             >

@@ -1,11 +1,14 @@
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { Button, Col, Divider, Grid, Group, Paper, Title } from "@mantine/core";
+import { Col, Grid, Group, Title } from "@mantine/core";
 import { gql } from "@urql/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useState, MouseEvent } from "react";
 import { useQuery, useMutation } from "urql";
+import { Button } from "../../components/buttons";
+import { Paper } from "../../components/containers";
+import Divider from "../../components/Divider";
 import HireForm from "../../components/hire/HireForm";
 import Summary from "../../components/hire/Summary";
 import Page from "../../components/Page";
@@ -140,25 +143,27 @@ function Hire() {
     <Page>
       <Grid gutter="lg">
         <Col span={7}>
-          <Paper padding="md" shadow="xs">
-            <Title order={2}>Hire {name}</Title>
-            <Title order={4}>{nickname}</Title>
+          <Paper>
+            <Paper.Content>
+              <Title order={2}>Hire {name}</Title>
+              <Title order={4}>{nickname}</Title>
 
-            <Divider />
+              <Divider />
 
-            <HireForm onItemAdded={handleItemAdded} />
+              <HireForm onItemAdded={handleItemAdded} />
+            </Paper.Content>
           </Paper>
 
-          <Paper padding="md" shadow="xs" className="mt-5">
+          <div className="mt-6">
             <Group position="right">
-              <Button variant="outline" color="red" onClick={handleCancelClick}>
+              <Button secondary onClick={handleCancelClick}>
                 Cancel
               </Button>
               <Button disabled={!lineItems.length} onClick={handleSubmitClick}>
                 Submit
               </Button>
             </Group>
-          </Paper>
+          </div>
         </Col>
 
         <Col span={5}>

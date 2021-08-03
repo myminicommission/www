@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Avatar, Button, Card, Divider, Group } from "@mantine/core";
+import { Avatar, Group } from "@mantine/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebook,
@@ -7,6 +7,7 @@ import {
   faTwitch,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
+import { Button } from "../buttons";
 
 function SocialLink({ href, text, icon }) {
   return (
@@ -25,7 +26,7 @@ function SocialLink({ href, text, icon }) {
   );
 }
 
-function SocialLinkList({ socials }) {
+export function SocialLinkList({ socials }) {
   return (
     <div>
       {socials.facebook && (
@@ -51,9 +52,9 @@ function SocialLinkList({ socials }) {
   );
 }
 
-function PanelHeader({ forHire, name, nickname, picture }) {
+export function PanelHeader({ forHire, name, nickname, picture }) {
   return (
-    <div className="p-6 text-center border-b border-gray-600">
+    <div className="text-center">
       {picture && (
         <Group position="center">
           <Avatar src={picture} alt={name} size="xl" />
@@ -63,15 +64,7 @@ function PanelHeader({ forHire, name, nickname, picture }) {
       {forHire && (
         <div className="w-full mt-5">
           <Link href={`/${nickname}/hire`}>
-            <Button
-              fullWidth
-              variant="outline"
-              color="green"
-              size="xl"
-              radius="xs"
-            >
-              Hire Me
-            </Button>
+            <Button className="w-full h-12">Hire Me</Button>
           </Link>
         </div>
       )}
@@ -79,7 +72,7 @@ function PanelHeader({ forHire, name, nickname, picture }) {
   );
 }
 
-function ContactMeLink() {
+export function ContactMeLink() {
   return (
     <a
       href="#"
@@ -112,7 +105,7 @@ function ContactMeLink() {
   );
 }
 
-function ManageAccountLink({ nickname }) {
+export function ManageAccountLink({ nickname }) {
   return (
     <Link href={`/${nickname}/edit`}>
       <a className="flex px-4 py-2 pb-4 text-gray-200 no-underline hover:bg-gray-900 hover:no-underline">
@@ -122,45 +115,12 @@ function ManageAccountLink({ nickname }) {
   );
 }
 
-function LogoutLink() {
+export function LogoutLink() {
   return (
     <Link href="/api/auth/logout">
       <a className="flex px-4 py-2 pb-4 no-underline hover:bg-gray-900 hover:no-underline">
         <p className="text-sm font-medium leading-none text-red-500">Logout</p>
       </a>
     </Link>
-  );
-}
-
-export default function ProfileInfoPanel({ router, profile, user }) {
-  const { picture, name, nickname, forHire, socials } = profile;
-  return (
-    <Card>
-      <PanelHeader
-        forHire={forHire}
-        name={name}
-        nickname={nickname}
-        picture={picture}
-      />
-
-      {socials && <SocialLinkList socials={socials} />}
-
-      <div>
-        {/* Contact Me Link */}
-        <ContactMeLink />
-
-        {user && user.nickname === router.query.nickname && (
-          <div>
-            <Divider />
-
-            {/* Manage Account Link */}
-            <ManageAccountLink nickname={nickname} />
-
-            {/* Logout Link */}
-            <LogoutLink />
-          </div>
-        )}
-      </div>
-    </Card>
   );
 }
