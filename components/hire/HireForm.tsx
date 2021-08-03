@@ -1,10 +1,10 @@
-import { Col, Grid, Loader, NumberInput } from "@mantine/core";
+import { Col, Grid, Loader } from "@mantine/core";
 import { gql, OperationContext } from "@urql/core";
 import { useEffect, useState } from "react";
 import { useQuery } from "urql";
 import { LineItem } from "../../types/hire";
 import { Button } from "../buttons";
-import { Option, Select } from "../form";
+import { NumberInput, Option, Select } from "../form";
 import Field from "../form/Field";
 
 const GAMES_QUERY = gql`
@@ -180,7 +180,7 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
               label="Quantity"
               required
               disabled={selectedMini.value === "none"}
-              onChange={(val) => setSelectedQty(val)}
+              onChange={(e) => setSelectedQty(parseInt(e.target.value))}
               min={1}
             />
           </Col>
