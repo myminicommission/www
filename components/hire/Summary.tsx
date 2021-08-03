@@ -62,7 +62,7 @@ export default function Summary({ lineItems }: SummaryProps) {
 
   return (
     <>
-      <Title order={2}>Summary</Title>
+      <h2 className="text-2xl leading-6 font-bold text-gray-100">Summary</h2>
 
       {Object.keys(sortedLineItems).map((key) => (
         <div className="pt-3">

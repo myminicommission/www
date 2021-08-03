@@ -1,7 +1,7 @@
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { Col, Grid, Group, Title } from "@mantine/core";
 import { gql } from "@urql/core";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useState, MouseEvent } from "react";
@@ -66,8 +66,9 @@ function Hire() {
       nickname: router.query.nickname,
     },
   });
-  const [mutationResult, newCommissionMutation] =
-    useMutation(NEW_COMMISSION_QUERY);
+  const [mutationResult, newCommissionMutation] = useMutation(
+    NEW_COMMISSION_QUERY
+  );
 
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
 
@@ -140,12 +141,18 @@ function Hire() {
 
   return (
     <Page>
-      <Grid gutter="lg">
-        <Col span={7}>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="lg:col-span-3">
           <Paper>
             <Paper.Content>
-              <Title order={2}>Hire {name}</Title>
-              <Title order={4}>{nickname}</Title>
+              <h1 className="text-2xl leading-6 font-bold text-gray-100">
+                Hire {name}
+              </h1>
+              <p className="text-md text-gray-500">
+                <Link href={`/${nickname}`}>
+                  <a>@{nickname}</a>
+                </Link>
+              </p>
 
               <Divider />
 
@@ -154,18 +161,18 @@ function Hire() {
           </Paper>
 
           <div className="mt-6">
-            <Group position="right">
-              <Button secondary onClick={handleCancelClick}>
-                Cancel
-              </Button>
+            <span className="relative z-0 inline-flex shadow-sm rounded-md w-full flex-row-reverse">
               <Button disabled={!lineItems.length} onClick={handleSubmitClick}>
                 Submit
               </Button>
-            </Group>
+              <Button secondary onClick={handleCancelClick}>
+                Cancel
+              </Button>
+            </span>
           </div>
-        </Col>
+        </div>
 
-        <Col span={5}>
+        <div className="lg:col-span-2">
           <Paper>
             <Paper.Content>
               <Summary
@@ -174,8 +181,8 @@ function Hire() {
               />
             </Paper.Content>
           </Paper>
-        </Col>
-      </Grid>
+        </div>
+      </div>
     </Page>
   );
 }
