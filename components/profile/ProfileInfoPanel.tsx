@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Avatar, Group } from "@mantine/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebook,
@@ -56,11 +55,14 @@ export function PanelHeader({ forHire, name, nickname, picture }) {
   return (
     <div className="text-center">
       {picture && (
-        <Group position="center">
-          <Avatar src={picture} alt={name} size="xl" />
-        </Group>
+        <img
+          className="inline-block h-20 w-20 rounded-md"
+          src={picture}
+          alt={name}
+        />
       )}
       <p className="pt-2 text-lg font-semibold">{name}</p>
+
       {forHire && (
         <div className="w-full mt-5">
           <Link href={`/${nickname}/hire`}>
