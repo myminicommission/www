@@ -1,9 +1,9 @@
 import { ChangeEventHandler } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 type SelectProps = {
   id?: string;
-  name?: string;
-  label?: string;
+  label: string;
   required?: boolean;
   className?: string;
   defaultValue?: string;
@@ -23,7 +23,6 @@ type OptionProps = {
 
 export function Select({
   id,
-  name,
   label,
   required,
   className,
@@ -32,14 +31,19 @@ export function Select({
   onChange,
   disabled,
 }: SelectProps) {
+  const elementID = id ? id : uuidv4();
+
   return (
     <>
-      <label>
+      <label
+        htmlFor={elementID}
+        className="block text-sm font-medium text-gray-400"
+      >
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <select
-        id={id}
-        name={name}
+        id={elementID}
+        name={elementID}
         className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-600 bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md ${className}`}
         defaultValue={defaultValue}
         onChange={onChange}
