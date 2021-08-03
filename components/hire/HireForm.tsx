@@ -1,4 +1,3 @@
-import { Loader } from "@mantine/core";
 import { gql, OperationContext } from "@urql/core";
 import { useEffect, useState } from "react";
 import { useQuery } from "urql";
@@ -6,6 +5,7 @@ import { LineItem } from "../../types/hire";
 import { Button } from "../buttons";
 import { NumberInput, Option, Select } from "../form";
 import Field from "../form/Field";
+import Loader from "../Loader";
 
 const GAMES_QUERY = gql`
   {
@@ -81,7 +81,11 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
   }, [minisResult, setGameMinis, sortByName]);
 
   if (gamesResult.fetching) {
-    return <Loader />;
+    return (
+      <div className="mt-6">
+        <Loader />
+      </div>
+    );
   }
 
   const games = sortByName(gamesResult.data.games);
