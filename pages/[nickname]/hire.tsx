@@ -66,9 +66,8 @@ function Hire() {
       nickname: router.query.nickname,
     },
   });
-  const [mutationResult, newCommissionMutation] = useMutation(
-    NEW_COMMISSION_QUERY
-  );
+  const [mutationResult, newCommissionMutation] =
+    useMutation(NEW_COMMISSION_QUERY);
 
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
 

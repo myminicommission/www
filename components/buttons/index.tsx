@@ -6,19 +6,47 @@ const MD: string = "md";
 const LG: string = "lg";
 const XL: string = "xl";
 
+export type ButtonColors = {
+  background: string;
+  border: string;
+  text?: string;
+  hover?: {
+    background: string;
+    border: string;
+    text?: string;
+  };
+};
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+function stringifyButtonColors(color: ButtonColors): string {
+  let classes = `${color.background} ${color.border}`;
+
+  if (color.text) classes = classNames(classes, color.text);
+
+  if (color.hover) {
+    classes = classNames(
+      classes,
+      `${color.hover.background} ${color.hover.border}`
+    );
+
+    if (color.hover.text) classes = classNames(classes, color.hover.text);
+  }
+
+  return classes;
+}
+
 type ButtonProps = {
   className?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   children: React.ReactNode;
   secondary?: boolean;
   disabled?: boolean;
-  baseColor?: string;
+  baseColor?: ButtonColors;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
 };
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export function TinyFAB({ children, className, onClick }: ButtonProps) {
   return (
@@ -43,33 +71,33 @@ export function SmallFAB({ children, className, onClick }: ButtonProps) {
 }
 
 type Dimensions = {
-  x: number;
-  y: number;
+  x: string;
+  y: string;
   text: string;
 };
 
 function dimsFromSize(size: string): Dimensions {
-  let x = 4;
-  let y = 2;
-  let text = "sm";
+  let x = "px-4";
+  let y = "py-2";
+  let text = "test-sm";
 
   switch (size) {
     case XS:
-      x = 2.5;
-      y = 1.5;
-      text = "xs";
+      x = "px-2.5";
+      y = "py-1.5";
+      text = "test-xs";
       break;
     case SM:
-      x = 3;
-      y = 2;
+      x = "px-3";
+      y = "py-2";
       break;
     case LG:
-      text = "base";
+      text = "test-base";
       break;
     case XL:
-      x = 6;
-      y = 3;
-      text = "base";
+      x = "px-6";
+      y = "py-3";
+      text = "test-base";
       break;
   }
 
@@ -86,8 +114,7 @@ export function Button({
   size,
 }: ButtonProps) {
   const dims = dimsFromSize(size);
-  const color = baseColor ? baseColor : secondary ? "purple" : "green";
-  let classes = `text-white font-bold inline-flex items-center justify-center px-${dims.x} py-${dims.y} border border-transparent text-${dims.text} font-medium rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`;
+  let classes = `text-white font-bold inline-flex items-center justify-center ${dims.x} ${dims.y} border border-transparent ${dims.text} font-medium rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`;
 
   if (disabled) {
     classes = classNames(
@@ -96,10 +123,30 @@ export function Button({
       "cursor-not-allowed"
     );
   } else {
-    classes = classNames(
-      classes,
-      `bg-${color}-500 hover:border-${color}-500 hover:bg-${color}-400 border-${color}-700`
-    );
+    const purple: ButtonColors = {
+      background: "bg-purple-500",
+      border: "border-purple-700",
+      hover: {
+        background: "hover:bg-purple-400",
+        border: "hover:border-purple-500",
+      },
+    };
+
+    const green: ButtonColors = {
+      background: "bg-green-500",
+      border: "border-green-700",
+      hover: {
+        background: "hover:bg-green-400",
+        border: "hover:border-green-500",
+      },
+    };
+
+    const color: ButtonColors = baseColor
+      ? baseColor
+      : secondary
+      ? purple
+      : green;
+    classes = classNames(classes, stringifyButtonColors(color));
   }
 
   classes = classNames(classes, className);

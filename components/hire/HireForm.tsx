@@ -192,6 +192,7 @@ export default function HireForm({ onItemAdded }: HireFormProps) {
           </div>
           <div className="lg:col-span-2">
             <Button
+              size="xs"
               className="w-full"
               onClick={handleMiniAddClick}
               disabled={selectedMini.value === "none"}
