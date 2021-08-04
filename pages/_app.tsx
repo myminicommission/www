@@ -1,19 +1,29 @@
 import { UserProvider, useUser } from "@auth0/nextjs-auth0";
-import { AppProps /*, AppContext */ } from "next/app";
+import { AppProps } from "next/app";
 import { withUrqlClient } from "next-urql";
 import Header from "../components/Header";
 import "../styles/globals.css";
+import Head from "next/head";
 
 function MyApp(props: AppProps) {
   return (
-    <UserProvider>
-      <ContentWrapper {...props} />
-    </UserProvider>
+    <>
+      <Head>
+        <title>My Mini Commission</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <UserProvider>
+        <ContentWrapper {...props} />
+      </UserProvider>
+    </>
   );
 }
 
 function ContentWrapper({ Component, pageProps }: AppProps) {
   const { user, error, isLoading } = useUser();
+  if (user && !user.nickname) {
+    user.nickname = "";
+  }
 
   if (error) console.error(error);
 

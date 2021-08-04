@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { UserProfile } from "@auth0/nextjs-auth0";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 type HeaderProps = {
   user: UserProfile;
@@ -12,8 +11,15 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-function UserMenu({ user, userNavigation }) {
+function UserMenu({ user }) {
   const [open, setOpen] = useState(false);
+
+  const userNavigation = [
+    { name: "View Profile", href: `/${user?.nickname}` },
+    { name: "Edit Profile", href: `/${user?.nickname}/edit` },
+    { name: "Logout", href: "/api/auth/logout" },
+  ];
+
   return (
     <Menu as="div" className="ml-3 relative">
       <div>
@@ -67,11 +73,6 @@ function UserMenu({ user, userNavigation }) {
 }
 
 export default function Header({ user }: HeaderProps) {
-  const userNavigation = [
-    { name: "View Profile", href: `/${user?.nickname}` },
-    { name: "Edit Profile", href: `/${user?.nickname}/edit` },
-    { name: "Logout", href: "/api/auth/logout" },
-  ];
   return (
     <header className="lg:px-16 px-6 bg-gray-900 flex flex-wrap items-center lg:py-0 py-2">
       <div className="flex-1 flex justify-between items-center">
@@ -115,7 +116,7 @@ export default function Header({ user }: HeaderProps) {
         </nav>
 
         {/* Profile dropdown */}
-        {user && <UserMenu user={user} userNavigation={userNavigation} />}
+        {user && <UserMenu user={user} />}
       </div>
     </header>
   );

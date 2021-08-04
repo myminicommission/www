@@ -1,14 +1,8 @@
-import Head from "next/head";
 import Box from "../components/Box";
 
 export default function Home() {
   return (
     <div>
-      <Head>
-        <title>My Mini Commission</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <div className="lg:px-4">
         <div className="max-w-none lg:max-w-7xl mx-auto my-0 lg:my-16">
           <Box
